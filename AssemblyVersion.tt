@@ -27,7 +27,7 @@
 	int i2 = 0;
 	string s;
 
-	string versionfile =  @"D:\ksp\mods\AllYAll-master\AllYAll.version";
+	string versionfile =  @"D:\Users\jbb\github\AllYAll\AllYAll.version";
 	if (!File.Exists(versionfile))
 	{
 		Write("File: " + versionfile + " missing\n");		
