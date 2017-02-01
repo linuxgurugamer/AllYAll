@@ -12,7 +12,6 @@ namespace AllYAll
 {
 
     // ############# CARGO BAYS ############### //
-
     
     public class AYA_CargoBay : PartModule
     {

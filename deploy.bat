@@ -1,5 +1,5 @@
 ﻿
-set H=D:\ksp_current\
+set H=r:\KSP_1.2.2_dev
 echo %H%
 
 copy /Y "bin\Debug\AllYAll.dll" "GameData\AllYAll\Plugins"

@@ -1,7 +1,17 @@
-﻿0.9
+﻿0.10.2
+		Mod adopted by Linuxgugamer
+		Added deploy/retract all for antennae, thank s@verdesmarald
+
+0.10.1
+		Bugfix and code optimization, plus some changes to menus
+		Updated to 1.2.2
+		Fixed: Null Reference errors when deploying/retracting solar panels when static panels were present.
+		Buttons are more logical now, "retract all" is available on all extended panels, while "extend all" is on retracted ones. Changes for Radiators, Solar Panels, and Cargo Bays.
+		Minor changes: Does not appear on extended solar panels that cannot retract. Cargo Bays can be toggled while in motion to whatever they will eventually be.
+
+0.9
 		Broke each type into it's own file
 		Fixed AYA_SAS code
-
 
 0.8: 
 		Added functionality to the new 1.2 "Science Box."

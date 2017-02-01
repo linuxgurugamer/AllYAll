@@ -89,6 +89,9 @@ if %25textTemplatingPath%25=="\Microsoft Shared\TextTemplating\$(VisualStudioVer
   <PropertyGroup>
     <PostBuildEvent>start /D D:\users\jbb\github\AllYAll  /WAIT deploy.bat
 
+if $(ConfigurationName) == Release (
+start /D D:\users\jbb\github\AllYAll /WAIT buildRelease.bat
+)
 </PostBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
