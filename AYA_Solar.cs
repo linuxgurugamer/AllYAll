@@ -10,7 +10,6 @@ using UnityEngine;
 
 namespace AllYAll
 {
-
     // ############# SOLAR PANELS ############### //
 
     public class AYA_Solar : PartModule
