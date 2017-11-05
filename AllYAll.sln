@@ -1,9 +1,9 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 14
-VisualStudioVersion = 14.0.25420.1
+# Visual Studio 15
+VisualStudioVersion = 15.0.26730.8
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AllYAll", "AllYAll.csproj", "{48F12FBE-2AED-4081-9C06-FF54FE476A0C}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AllYAll", "Source\AllYAll.csproj", "{48F12FBE-2AED-4081-9C06-FF54FE476A0C}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{0BEB751C-7692-44DA-BDE6-9EA0729B6BB2}"
 	ProjectSection(SolutionItems) = preProject
@@ -11,6 +11,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		buildRelease.bat = buildRelease.bat
 		ChangeLog.txt = ChangeLog.txt
 		deploy.bat = deploy.bat
+		jenkins.txt = jenkins.txt
 		License.txt = License.txt
 		README.md = README.md
 	EndProjectSection
@@ -28,5 +29,8 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {68F62414-B797-4127-8272-CFD31B4A6DD2}
 	EndGlobalSection
 EndGlobal
