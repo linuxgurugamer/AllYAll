@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using UnityEngine;
+using KSP.Localization;
 
 namespace AllYAll
 {
@@ -15,7 +16,8 @@ namespace AllYAll
 
     public class AYA_Antenna : PartModule
     {
-        [KSPEvent(guiActive = true, guiActiveEditor = false, guiName = "Extend All")]
+        // [KSPEvent(guiActive = true, guiActiveEditor = false, guiName = "Extend All")]
+        [KSPEvent(guiActive = true, guiActiveEditor = false, guiName = Localizer.Format("#AYA_ANTENNA_UI_ANTENNA_EXTEND_ALL"))]  // Modify this ambiguous string >>> "Extend All" --> "Extend all antenna"
         public void DoAllAntenna()                                                                //This runs every time you click "extend all" or "retract all"
         {
             bool extended = true;                                                               //This is the check if we are extending or retracting all, default to retracting.
@@ -57,12 +59,14 @@ namespace AllYAll
 
                 if (thisPart.deployState == ModuleDeployablePart.DeployState.RETRACTED)         //If it's retracted...
                 {
-                    Events["DoAllAntenna"].guiName = "Extend all antennae";                          //Set it to extend.
+                    // Events["DoAllAntenna"].guiName = "Extend all antennae";                          //Set it to extend.
+                    Events["DoAllAntenna"].guiName = Localizer.Format("#AYA_ANTENNA_UI_ANTENNA_EXTEND_ALL");    //Set it to extend.
                     Events["DoAllAntenna"].active = true;
                 }
                 if (thisPart.retractable && thisPart.deployState == ModuleDeployablePart.DeployState.EXTENDED)  //If it's extended AND retractable...
                 {
-                    Events["DoAllAntenna"].guiName = "Retract all antennae";                         //set it to retract.
+                    // Events["DoAllAntenna"].guiName = "Retract all antennae";                         //set it to retract.
+                    Events["DoAllAntenna"].guiName = Localizer.Format("#AYA_ANTENNA_UI_ANTENNA_RETRACT_ALL");      //set it to retract.
                     Events["DoAllAntenna"].active = true;
                 }
             }
