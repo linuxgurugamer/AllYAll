@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using UnityEngine;
+using KSP.Localization;
 
 namespace AllYAll
 {
@@ -69,12 +70,14 @@ namespace AllYAll
                     }
                     if (thisPartAnimate.animSwitch)
                     {
-                        Events["DoAllBays"].guiName = "Close all bays";
+                        // Events["DoAllBays"].guiName = "Close all bays";
+                        Events["DoAllBays"].guiName = Localizer.Format("#AYA_ANTENNA_UI_CARGO_BAYS_CLOSE_ALL");
                         Events["DoAllBays"].active = true;
                     }
                     else
                     {
-                        Events["DoAllBays"].guiName = "Open all bays";
+                        // Events["DoAllBays"].guiName = "Open all bays";
+                        Events["DoAllBays"].guiName = Localizer.Format("#AYA_ANTENNA_UI_CARGO_BAYS_OPEN_ALL");
                         Events["DoAllBays"].active = true;
                     }
                 }

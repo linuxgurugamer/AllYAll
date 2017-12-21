@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using UnityEngine;
+using KSP.Localization;
 
 namespace AllYAll
 {
@@ -56,12 +57,14 @@ namespace AllYAll
 
                 if (thisPart.deployState == ModuleDeployablePart.DeployState.RETRACTED)         //If it's retracted...
                 {
-                    Events["DoAllSolar"].guiName = "Extend all solar";                          //Set it to extend.
+                    // Events["DoAllSolar"].guiName = "Extend all solar";                          //Set it to extend.
+                    Events["DoAllSolar"].guiName = Localizer.Format("#AYA_ANTENNA_UI_SOLAR_EXTEND_ALL");                         //Set it to extend.
                     Events["DoAllSolar"].active = true;
                 }
                 if (thisPart.retractable && thisPart.deployState == ModuleDeployablePart.DeployState.EXTENDED)  //If it's extended AND retractable...
                 {
-                    Events["DoAllSolar"].guiName = "Retract all solar";                         //set it to retract.
+                    // Events["DoAllSolar"].guiName = "Retract all solar";                         //set it to retract.
+                    Events["DoAllSolar"].guiName = Localizer.Format("#AYA_ANTENNA_UI_SOLAR_RETRACT_ALL");                         //set it to retract.
                     Events["DoAllSolar"].active = true;
                 }
             }

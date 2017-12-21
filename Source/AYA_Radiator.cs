@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using UnityEngine;
+using KSP.Localization;
 
 namespace AllYAll
 {
@@ -56,12 +57,14 @@ namespace AllYAll
 
                 if (thisPart.deployState == ModuleDeployablePart.DeployState.RETRACTED)         //If it's retracted...
                 {
-                    Events["DoAllRadiator"].guiName = "Extend all radiators";                   //Set it to extend.
+                    // Events["DoAllRadiator"].guiName = "Extend all radiators";                   //Set it to extend.
+                    Events["DoAllRadiator"].guiName = Localizer.Format("#AYA_ANTENNA_UI_RADIATOR_EXTEND_ALL");                   //Set it to extend.
                     Events["DoAllRadiator"].active = true;
                 }
                 if (thisPart.deployState == ModuleDeployablePart.DeployState.EXTENDED)          //If it's extended...
                 {
-                    Events["DoAllRadiator"].guiName = "Retract all radiators";                  //set it to retract.
+                    // Events["DoAllRadiator"].guiName = "Retract all radiators";                  //set it to retract.
+                    Events["DoAllRadiator"].guiName = Localizer.Format("#AYA_ANTENNA_UI_RADIATOR_RETRACT_ALL");                  //set it to retract.
                     Events["DoAllRadiator"].active = true;
                 }
             }

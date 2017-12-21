@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using UnityEngine;
+using KSP.Localization;
 
 namespace AllYAll
 {
@@ -17,6 +18,10 @@ namespace AllYAll
         [KSPEvent(guiActive = true, guiActiveEditor = false, guiName = "Reset All Science")]
         public void DoResetScience()
         {
+            if (Events["DoResetScience"].guiName == "Reset All Science")
+            {
+                Events["DoResetScience"].guiName = Localizer.Format("#AYA_ANTENNA_UI_SCIENCE_RESET_ALL");
+            }
             bool haveScientist = false;
             foreach (ProtoCrewMember crewMember in vessel.GetVesselCrew())
             {
