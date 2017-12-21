@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using UnityEngine;
+using KSP.Localization;
 
 namespace AllYAll
 {
@@ -82,23 +83,27 @@ namespace AllYAll
 
             if (resourceConvertersActive)
             {
-                Events["StartStopDrills"].guiName = "Stop all drills";
+                // Events["StartStopDrills"].guiName = "Stop all drills";
+                Events["StartStopDrills"].guiName = Localizer.Format("#AYA_ANTENNA_UI_DRILL_STOP_ALL");
                 Events["ExtendRetractAllDrills"].guiActive = false;
             }
             else
             {
-                Events["StartStopDrills"].guiName = "Start all drills";
+                // Events["StartStopDrills"].guiName = "Start all drills";
+                Events["StartStopDrills"].guiName = Localizer.Format("#AYA_ANTENNA_UI_DRILL_START_ALL");
                 Events["ExtendRetractAllDrills"].guiActive = true;
             }
 
             if (drillsDeployed)
             {
-                Events["ExtendRetractAllDrills"].guiName = "Retract All drills";
+                // Events["ExtendRetractAllDrills"].guiName = "Retract All drills";
+                Events["ExtendRetractAllDrills"].guiName = Localizer.Format("#AYA_ANTENNA_UI_DRILL_RETRACT_ALL");
                 Events["StartStopDrills"].guiActive = true;
             }
             else
             {
-                Events["ExtendRetractAllDrills"].guiName = "Extend All drills";
+                // Events["ExtendRetractAllDrills"].guiName = "Extend All drills";
+                Events["ExtendRetractAllDrills"].guiName = Localizer.Format("#AYA_ANTENNA_UI_DRILL_EXTEND_ALL");
                 Events["StartStopDrills"].guiActive = false;
             }
 

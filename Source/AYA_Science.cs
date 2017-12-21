@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using UnityEngine;
+using KSP.Localization;
 
 namespace AllYAll
 {
@@ -17,6 +18,10 @@ namespace AllYAll
         [KSPEvent(guiActive = true, guiActiveEditor = false, guiName = "Perform All Science")]
         public void DoAllScience()
         {
+            if (Events["DoAllScience"].guiName == "Perform All Science")
+            {
+                Events["DoAllScience"].guiName = Localizer.Format("#AYA_ANTENNA_UI_SCIENCE_PERFORM_ALL");
+            }
             foreach (Part eachPart in vessel.Parts)                                 //Cycle through each part on the vessel
             {
                 foreach (ModuleScienceExperiment thisExperiment

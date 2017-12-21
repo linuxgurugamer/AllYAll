@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using UnityEngine;
+using KSP.Localization;
 
 namespace AllYAll
 {
@@ -49,11 +50,13 @@ namespace AllYAll
             {
                 if (thisPart.State == ModuleReactionWheel.WheelState.Active)
                 {
-                    Events["DoAllReactionWheel"].guiName = "Deactivate All SAS";
+                    // Events["DoAllReactionWheel"].guiName = "Deactivate All SAS";
+                    Events["DoAllReactionWheel"].guiName = Localizer.Format("#AYA_ANTENNA_UI_SAS_DEACTIVATE_ALL");
                 }
                 else
                 {
-                    Events["DoAllReactionWheel"].guiName = "Activate All SAS";
+                    // Events["DoAllReactionWheel"].guiName = "Activate All SAS";
+                    Events["DoAllReactionWheel"].guiName = Localizer.Format("#AYA_ANTENNA_UI_SAS_ACTIVATE_ALL");
                 }
             }
         }
