@@ -15,7 +15,6 @@ namespace AllYAll
 
     public class AYA_FuelCell : PartModule
     {
-        const double ACTIVATION_TIME = 1;
         double turnOnTime = 0;
 
         [KSPEvent(guiActive = true, guiActiveEditor = false, guiName = "Start All")]

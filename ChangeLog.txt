@@ -1,4 +1,6 @@
-﻿0.11.12
+﻿0.11.13
+		Added activate/deactivate for radiators
+0.11.12
 		Localization
 		Added Fuel Cells
 		Added Science activation for DMagic science parts
