@@ -43,18 +43,15 @@
     <Compile Include="AYA_Science.cs" />
     <Compile Include="AYA_ScienceBox.cs" />
     <Compile Include="AYA_Solar.cs" />
+    <Compile Include="AYA_FuelCell.cs" />
+    <Compile Include="DMagic.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Assembly-CSharp-firstpass.dll" />
-    <Content Include="Assembly-CSharp.dll" />
     <Content Include="AssemblyVersion.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
       <LastGenOutput>AssemblyVersion.cs</LastGenOutput>
     </Content>
-    <Content Include="KSPAssets.dll" />
-    <Content Include="UnityEngine.dll" />
-    <Content Include="UnityEngine.UI.dll" />
   </ItemGroup>
   <ItemGroup>
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
@@ -95,8 +92,12 @@ set textTemplatingPath="%25ProgramFiles(x86)%25\Microsoft Visual Studio\2017\Com
   <PropertyGroup>
     <PostBuildEvent>start /D D:\users\jbb\github\AllYAll  /WAIT deploy.bat
 
+
+
 if $(ConfigurationName) == Release (
+
 start /D D:\users\jbb\github\AllYAll /WAIT buildRelease.bat
+
 )
 </PostBuildEvent>
   </PropertyGroup>

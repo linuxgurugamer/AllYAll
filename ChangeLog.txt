@@ -1,4 +1,9 @@
-﻿0.1.11.1
+﻿0.11.12
+		Localization
+		Added Fuel Cells
+		Added Science activation for DMagic science parts
+
+0.11.1.1
 		Updated MM dll
 
 0.11.1
