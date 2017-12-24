@@ -15,7 +15,7 @@ namespace AllYAll
 
     public class AYA_Radiator : PartModule
     {
-        [KSPEvent(guiActive = true, guiActiveEditor = false, guiName = "Extend All")]
+        [KSPEvent(guiActive = true, guiActiveEditor = false, guiName = "#AYA_ANTENNA_UI_SAS_ACTIVATE_ALL")]
         public void DoAllRadiator()
         {
             bool extended = true;

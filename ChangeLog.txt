@@ -1,5 +1,9 @@
-﻿0.11.x
+﻿0.11.13.1
 		Added russian translation, thanks @flart
+		Updated japanese translation, thanks @RonnyWu
+		Some minor code cleanup
+		Fixed issue where service bays weren't being controlled properly by the open/close all cargo bays
+		Fixed initial event text to be localized
 
 0.11.13
 		Added activate/deactivate for radiators

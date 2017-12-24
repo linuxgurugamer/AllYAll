@@ -17,21 +17,24 @@ namespace AllYAll
     public class AYA_CargoBay : PartModule
     {
 
-        [KSPEvent(guiActive = true, guiActiveEditor = false, guiName = "Open Bays")]
+        [KSPEvent(guiActive = true, guiActiveEditor = false, guiName = "#AYA_ANTENNA_UI_CARGO_BAYS_OPEN_ALL")]
         public void DoAllBays()
         {
             bool cargoBayOpen = false;
 
             var callingPart = this.part.FindModuleImplementing<ModuleAnimateGeneric>();   //Variable for the part doing the work.
-            if (callingPart.animSwitch == true)                                           //If the calling part is open...
+            var thisPartCargoBay = this.part.FindModuleImplementing<ModuleCargoBay>();
+
+            if ((callingPart.animSwitch & thisPartCargoBay.closedPosition == 1) ||
+                      (!callingPart.animSwitch & thisPartCargoBay.closedPosition == 0))
             {
                 cargoBayOpen = true;                                                      //...then it's open. Duh!
             }
 
             foreach (Part eachPart in vessel.Parts)
             {
-                var thisPart = eachPart.FindModuleImplementing<ModuleCargoBay>();
-                if (thisPart != null)
+                var thisPartModule = eachPart.FindModuleImplementing<ModuleCargoBay>();
+                if (thisPartModule != null)
                 {
                     var thisPartAnimate = eachPart.FindModuleImplementing<ModuleAnimateGeneric>();
                     if (thisPartAnimate != null)
@@ -39,13 +42,19 @@ namespace AllYAll
                         KSPActionParam param = new KSPActionParam(KSPActionGroup.Custom01, KSPActionType.Activate);
                         if (cargoBayOpen)
                         {
-                            if (thisPartAnimate.animSwitch)
+                            if ((thisPartAnimate.animSwitch & thisPartModule.closedPosition == 1) ||
+                                (!thisPartAnimate.animSwitch & thisPartModule.closedPosition == 0))
+                            {
                                 thisPartAnimate.ToggleAction(param);
+                            }
                         }
                         else
                         {
-                            if (!thisPartAnimate.animSwitch)
-                                thisPartAnimate.ToggleAction(param);
+                            if ((!thisPartAnimate.animSwitch & thisPartModule.closedPosition == 1) ||
+                                (thisPartAnimate.animSwitch & thisPartModule.closedPosition == 0))
+                            {
+                                 thisPartAnimate.ToggleAction(param);
+                            }
                         }
                     }
                 }
@@ -68,7 +77,8 @@ namespace AllYAll
                     {
                         Events["DoAllBays"].active = false;
                     }
-                    if (thisPartAnimate.animSwitch)
+                    if (( thisPartAnimate.animSwitch & thisPart.closedPosition == 1) ||
+                        (!thisPartAnimate.animSwitch & thisPart.closedPosition == 0))
                     {
                         // Events["DoAllBays"].guiName = "Close all bays";
                         Events["DoAllBays"].guiName = Localizer.Format("#AYA_ANTENNA_UI_CARGO_BAYS_CLOSE_ALL");

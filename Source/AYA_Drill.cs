@@ -17,7 +17,7 @@ namespace AllYAll
         bool resourceConvertersActive = false;
         bool drillsDeployed = false;
 
-        [KSPEvent(guiActive = true, guiActiveEditor = false, guiName = "Start All")]
+        [KSPEvent(guiActive = true, guiActiveEditor = false, guiName = "#AYA_ANTENNA_UI_DRILL_START_ALL")]
         public void StartStopDrills()
         {
             foreach (Part eachPart in vessel.Parts)
@@ -33,7 +33,7 @@ namespace AllYAll
             }
         }
 
-        [KSPEvent(guiActive = true, guiActiveEditor = false, guiName = "Extend All")]
+        [KSPEvent(guiActive = true, guiActiveEditor = false, guiName = "#AYA_ANTENNA_UI_DRILL_EXTEND_ALL")]
         public void ExtendRetractAllDrills()
         {
             foreach (Part eachPart in vessel.Parts)

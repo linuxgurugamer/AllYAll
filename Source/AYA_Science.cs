@@ -15,16 +15,20 @@ namespace AllYAll
 
     public class AYA_Science : PartModule
     {
-        [KSPEvent(guiActive = true, guiActiveEditor = false, guiName = "Perform All Science")]
+        private IList<ModuleScienceExperiment> _DMModuleScienceAnimates;
+        private IList<ModuleScienceExperiment> _DMModuleScienceAnimateGenerics;
+
+
+        [KSPEvent(guiActive = true, guiActiveEditor = false, guiName = "#AYA_ANTENNA_UI_SCIENCE_PERFORM_ALL")]
         public void DoAllScience()
         {
             var DMagic = new DMagicFactory();
-
+#if false
             if (Events["DoAllScience"].guiName == "Perform All Science")
             {
                 Events["DoAllScience"].guiName = Localizer.Format("#AYA_ANTENNA_UI_SCIENCE_PERFORM_ALL");
             }
-
+#endif
             foreach (Part eachPart in vessel.Parts)                                 //Cycle through each part on the vessel
             {
                 foreach (ModuleScienceExperiment thisExperiment
@@ -132,8 +136,6 @@ namespace AllYAll
 
 
         }
-        // private IList<ModuleScienceExperiment> _moduleScienceExperiments;
-        private IList<ModuleScienceExperiment> _DMModuleScienceAnimates;
-        private IList<ModuleScienceExperiment> _DMModuleScienceAnimateGenerics;
+
     }
 }

@@ -16,7 +16,7 @@ namespace AllYAll
 
     public class AYA_Antenna : PartModule
     {
-        [KSPEvent(guiActive = true, guiActiveEditor = false, guiName = "Extend All")]
+        [KSPEvent(guiActive = true, guiActiveEditor = false, guiName = "#AYA_ANTENNA_UI_ANTENNA_EXTEND_ALL")]
         public void DoAllAntenna()                                                                //This runs every time you click "extend all" or "retract all"
         {
             bool extended = true;                                                               //This is the check if we are extending or retracting all, default to retracting.

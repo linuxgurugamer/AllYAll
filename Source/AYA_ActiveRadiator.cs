@@ -17,7 +17,7 @@ namespace AllYAll
     {
         double turnOnTime = 0;
 
-        [KSPEvent(guiActive = true, guiActiveEditor = false, guiName = "Activate All")]
+        [KSPEvent(guiActive = true, guiActiveEditor = false, guiName = "#AYA_ANTENNA_UI_RADIATOR_ACTIVATE_ALL")]
         public void DoAllActivateRadiator()
         {
             double ACTIVATION_TIME = 0;
@@ -28,14 +28,13 @@ namespace AllYAll
                 var thisPart = eachPart.FindModuleImplementing<ModuleActiveRadiator>();     //If it's a radiator...
                 if (thisPart != null)                           
                 {
-                    bool retractable = true;
+                    //bool retractable = true;
                     var extendablePart = eachPart.FindModuleImplementing<ModuleDeployableRadiator>();
-                    if (extendablePart != null && extendablePart.animationName != "")
-                    {
-                        if (extendablePart.deployState == ModuleDeployablePart.DeployState.RETRACTED)
-                            retractable = false;
-
-                    }
+                    //if (extendablePart != null && extendablePart.animationName != "")
+                    //{
+                    //    if (extendablePart.deployState == ModuleDeployablePart.DeployState.RETRACTED)
+                    //        retractable = false;
+                    //}
                    // if (retractable)
                     {
                         ACTIVATION_TIME++;

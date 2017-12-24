@@ -16,7 +16,7 @@ namespace AllYAll
 
     public class AYA_SAS : PartModule
     {
-        [KSPEvent(guiActive = true, guiActiveEditor = false, guiName = "Activate All")]
+        [KSPEvent(guiActive = true, guiActiveEditor = false, guiName = "#AYA_ANTENNA_UI_SAS_ACTIVATE_ALL")]
         public void DoAllReactionWheel()
         {
             bool active = false;                                                                //This is the check if we are activating or deactivating reactio wheels.

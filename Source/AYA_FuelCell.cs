@@ -17,7 +17,7 @@ namespace AllYAll
     {
         double turnOnTime = 0;
 
-        [KSPEvent(guiActive = true, guiActiveEditor = false, guiName = "Start All")]
+        [KSPEvent(guiActive = true, guiActiveEditor = false, guiName = "#AYA_ANTENNA_UI_FUEL_CELL_START_ALL")]
         public void DoAllFuelCells()                                                                //This runs every time you click "extend all" or "retract all"
         {
             bool b = false;

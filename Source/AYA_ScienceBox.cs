@@ -15,7 +15,7 @@ namespace AllYAll
     // ############# SCIENCE BOX ############### //
     public class AYA_ScienceBox : PartModule
     {
-        [KSPEvent(guiActive = true, guiActiveEditor = false, guiName = "Reset All Science")]
+        [KSPEvent(guiActive = true, guiActiveEditor = false, guiName = "#AYA_ANTENNA_UI_SCIENCE_RESET_ALL")]
         public void DoResetScience()
         {
             if (Events["DoResetScience"].guiName == "Reset All Science")
