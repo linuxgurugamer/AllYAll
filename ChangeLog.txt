@@ -1,5 +1,9 @@
-﻿0.11.13
+﻿0.11.x
+		Added russian translation, thanks @flart
+
+0.11.13
 		Added activate/deactivate for radiators
+
 0.11.12
 		Localization
 		Added Fuel Cells
