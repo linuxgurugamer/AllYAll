@@ -1,11 +1,16 @@
 ﻿{
   "NAME": "AllYAllContinued",
-  "URL": "http://ksp-avc.cybutek.net/version.php?id=395",
+  "URL": "https://raw.githubusercontent.com/linuxgurugamer/AllYAll/master/AllYAll.version",
+  "DOWNLOAD" : "https://github.com/linuxgurugamer/AllYAll/releases",
+  "GITHUB" : {
+    "USERNAME" : "linuxgurugamer",
+    "REPOSITORY" : "AllYAll"
+  },
   "VERSION": {
     "MAJOR": 0,
     "MINOR": 11,
     "PATCH": 14,
-    "BUILD": 0
+    "BUILD": 1
   },
   "KSP_VERSION": {
     "MAJOR": 1,
