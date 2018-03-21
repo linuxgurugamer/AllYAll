@@ -1,5 +1,6 @@
-﻿0.11.13.x
+﻿0.11.14
 		more russian translations
+		Updated for 1.4.1
 
 0.11.13.2
 		Restored missing translated lines in chinese
