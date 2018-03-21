@@ -1,10 +1,20 @@
-﻿
-set H=r:\KSP_1.3.1_dev
-echo %H%
+﻿ 
+rem @echo off
 
-copy /Y "Source\bin\Debug\AllYAll.dll" "GameData\AllYAll\Plugins"
-copy /Y AllYAll.version GameData\AllYAll
+rem H is the destination game folder
+rem GAMEDIR is the name of the mod folder (usually the mod name)
+rem GAMEDATA is the name of the local GameData
+rem VERSIONFILE is the name of the version file, usually the same as GAMEDATA,
+rem    but not always
 
-cd GameData
-mkdir "%H%\GameData\AllYAll"
-xcopy /y /s AllYAll "%H%\GameData\AllYAll"
+set H=R:\KSP_1.4.1_dev
+set GAMEDIR=AllYAll
+set GAMEDATA="GameData\"
+set VERSIONFILE=%GAMEDIR%.version
+
+copy /Y "%1%2" "%GAMEDATA%\%GAMEDIR%\Plugins"
+copy /Y %VERSIONFILE% %GAMEDATA%\%GAMEDIR%
+
+xcopy /y /s /I %GAMEDATA%\%GAMEDIR% "%H%\GameData\%GAMEDIR%"
+
+pause

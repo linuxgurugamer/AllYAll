@@ -1,4 +1,7 @@
-﻿0.11.13.2
+﻿0.11.13.x
+		more russian translations
+
+0.11.13.2
 		Restored missing translated lines in chinese
 
 0.11.13.1
