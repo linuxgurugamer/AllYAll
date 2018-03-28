@@ -1,4 +1,10 @@
-﻿0.11.14
+﻿0.11.14.2
+		Added italian translation thank s to forum user @simog
+
+0.11.14.1
+		Updated version file
+
+0.11.14
 		more russian translations
 		Updated for 1.4.1
 
