@@ -1,4 +1,7 @@
-﻿0.11.14.3
+﻿0.11.14.4
+	Updated version file
+
+0.11.14.3
 		Added German translation thanks to user @LeLeon
 		added Spanish translations thanks to user @Fitiales
 
