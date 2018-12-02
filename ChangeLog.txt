@@ -1,4 +1,20 @@
-﻿0.11.15.2 (unreleased)
+﻿0.1.16 (unreleased)
+	Added NearFutureSolar panels to AYA_Solar
+	Added support for multiple ModuleAnimateGeneric and multiple ModuleCargoBay modules
+	Added patch for Mark IV Cargo Tail to fix 2 small bugs:
+		typo:  sstartEventGUIName
+		Wrong value for: closedPosition
+	Optimized code so that the PAW menu for parts is only updated when needed (when the mouse 
+	goes over the part).  This is a very significant improvement, and is noticable with large 
+	vessels which have lots of the following types of parts:
+		Cargo bays
+		Drills
+		Engines
+		Fuel Cells
+		SaS (reaction wheels)
+		Solar
+
+0.11.15.2 (unreleased)
 	Following contributed by @Deimos_Rast
 		Added support for all the DMMagic science modules
 		Added support for the NearFutureSolar

@@ -32,7 +32,10 @@ namespace AllYAll
             }
             else
                 return;             // should never happen
-            
+
+            Events["DoAllFuelCells"].active = false;
+            AYA_PAW_Refresh.Instance.RefreshPAWMenu(this.part, AYA_PAW_Refresh.AYA_Module.fuelcell, "DoAllFuelCells");
+
             foreach (Part part in vessel.Parts)                                             //Cycle through each part on the vessel
             {
                 if (part != null)                       
@@ -57,11 +60,26 @@ namespace AllYAll
             turnOnTime = Planetarium.GetUniversalTime() + ACTIVATION_TIME;
         }
 
-
-
-        public void FixedUpdate()                                                               //This runs every second and makes sure the menus are correct.
+        public void Start()
         {
-            if (HighLogic.LoadedScene == GameScenes.EDITOR)
+            this.part.AddOnMouseEnter(OnMouseEnter());
+        }
+        Part.OnActionDelegate OnMouseEnter()
+        {
+            UpdatePAWMenu();
+            return null;
+        }
+        public void OnDestroy()
+        {
+            this.part.RemoveOnMouseEnter(OnMouseEnter());
+        }
+        internal bool EventStatus(string e)
+        {
+            return Events[e].active;
+        }
+        public void UpdatePAWMenu()                                                               //This runs every second and makes sure the menus are correct.
+        {
+            if (HighLogic.LoadedScene != GameScenes.FLIGHT)
                 return;
 
           

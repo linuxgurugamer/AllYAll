@@ -25,6 +25,12 @@ namespace AllYAll
             {
                 active = true;                                                                 //...then it's active. Duh!
             }
+
+
+           // Events["DoAllReactionWheel"].active = false;
+           // AYA_PAW_Refresh.Instance.RefreshPAWMenu(this.part, AYA_PAW_Refresh.AYA_Module.sas, "DoAllReactionWheel");
+
+
             foreach (Part eachPart in vessel.Parts)
             {
                 var thisPart = eachPart.FindModuleImplementing<ModuleReactionWheel>();
@@ -37,12 +43,30 @@ namespace AllYAll
                         thisPart.Activate(kap);
                 }
             }
+
+            UpdatePAWMenu();
         }
 
-
-        public void FixedUpdate()
+        public void Start()
         {
-            if (HighLogic.LoadedScene == GameScenes.EDITOR)
+            this.part.AddOnMouseEnter(OnMouseEnter());
+        }
+        Part.OnActionDelegate OnMouseEnter()
+        {
+            UpdatePAWMenu();
+            return null;
+        }
+        public void OnDestroy()
+        {
+            this.part.RemoveOnMouseEnter(OnMouseEnter());
+        }
+        internal bool EventStatus(string e)
+        {
+            return Events[e].active;
+        }
+        public void UpdatePAWMenu()
+        {
+            if (HighLogic.LoadedScene != GameScenes.FLIGHT)
                 return;
 
             var thisPart = this.part.FindModuleImplementing<ModuleReactionWheel>();      //This is so the below code knows the part it's dealing with is a Reaction Wheel.

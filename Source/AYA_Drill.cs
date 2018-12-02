@@ -31,11 +31,15 @@ namespace AllYAll
                         baseConverterPart.StopResourceConverter();
                 }
             }
+            UpdatePAWMenu();
         }
 
         [KSPEvent(guiActive = true, guiActiveEditor = false, guiName = "#AYA_ANTENNA_UI_DRILL_EXTEND_ALL")]
         public void ExtendRetractAllDrills()
         {
+            //Events["ExtendRetractAllDrills"].active = false;
+            //AYA_PAW_Refresh.Instance.RefreshPAWMenu(this.part, AYA_PAW_Refresh.AYA_Module.drill, "ExtendRetractAllDrills");
+
             foreach (Part eachPart in vessel.Parts)
             {
                 var moduleAnimationGroupPart = eachPart.FindModuleImplementing<ModuleAnimationGroup>();
@@ -49,10 +53,27 @@ namespace AllYAll
             }
         }
 
-
-        public void FixedUpdate()
+        public void Start()
         {
-            if (HighLogic.LoadedScene == GameScenes.EDITOR)
+            this.part.AddOnMouseEnter(OnMouseEnter());
+        }
+        Part.OnActionDelegate OnMouseEnter()
+        {
+            UpdatePAWMenu();
+            return null;
+        }
+        public void OnDestroy()
+        {
+            this.part.RemoveOnMouseEnter(OnMouseEnter());
+        }
+
+        internal bool EventStatus(string e)
+        {
+            return Events[e].active;
+        }
+        public void UpdatePAWMenu()
+        {
+            if (HighLogic.LoadedScene != GameScenes.FLIGHT)
                 return;
 
             //
@@ -79,6 +100,7 @@ namespace AllYAll
                 var moduleAnimationGroupPart = eachPart.FindModuleImplementing<ModuleAnimationGroup>();
                 if (moduleAnimationGroupPart != null && moduleAnimationGroupPart.isDeployed)
                     drillsDeployed = true;
+                
             }
 
             if (resourceConvertersActive)

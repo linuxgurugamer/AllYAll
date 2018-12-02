@@ -66,7 +66,7 @@ namespace AllYAll
 
         public void Start()
         {
-            if (HighLogic.LoadedScene == GameScenes.EDITOR)
+            if (HighLogic.LoadedScene != GameScenes.FLIGHT)
                 return;
             StartCoroutine("SlowUpdate");
         }

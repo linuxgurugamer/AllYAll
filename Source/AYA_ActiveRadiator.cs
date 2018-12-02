@@ -23,6 +23,21 @@ namespace AllYAll
             double ACTIVATION_TIME = 0;
             var callingPart = this.part.FindModuleImplementing<ModuleActiveRadiator>();     //Variable for the part doing the work.
             bool isCooling = callingPart.IsCooling;
+
+            if (isCooling)
+            {
+                Events["DoAllActivateRadiator"].guiName = Localizer.Format("#AYA_ANTENNA_UI_RADIATOR_ACTIVATE_ALL");
+                Events["DoAllActivateRadiator"].active = true;
+            }
+            else
+            {
+                Events["DoAllActivateRadiator"].guiName = Localizer.Format("#AYA_ANTENNA_UI_RADIATOR_SHUTDOWN_ALL");
+                Events["DoAllActivateRadiator"].active = true;
+            }
+            Events["DoAllActivateRadiator"].active = false;
+            AYA_PAW_Refresh.Instance.RefreshPAWMenu(this.part, AYA_PAW_Refresh.AYA_Module.activeradiator, "DoAllActivateRadiator");
+
+
             foreach (Part eachPart in vessel.Parts)                                             //Cycle through each part on the vessel
             {
                 var thisPart = eachPart.FindModuleImplementing<ModuleActiveRadiator>();     //If it's a radiator...
@@ -56,9 +71,26 @@ namespace AllYAll
             turnOnTime = Planetarium.GetUniversalTime() + ACTIVATION_TIME;
         }
 
-        public void FixedUpdate()
+        public void Start()
         {
-            if (HighLogic.LoadedScene == GameScenes.EDITOR)
+            this.part.AddOnMouseEnter(OnMouseEnter());
+        }
+        Part.OnActionDelegate OnMouseEnter()
+        {
+            UpdatePAWMenu();
+            return null;
+        }
+        public void OnDestroy()
+        {
+            this.part.RemoveOnMouseEnter(OnMouseEnter());
+        }
+        internal bool EventStatus(string e)
+        {
+            return Events[e].active;
+        }
+        public void UpdatePAWMenu()
+        {
+            if (HighLogic.LoadedScene != GameScenes.FLIGHT)
                 return;
 
             if (Planetarium.GetUniversalTime() > turnOnTime)

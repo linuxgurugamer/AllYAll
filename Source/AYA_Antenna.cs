@@ -25,6 +25,29 @@ namespace AllYAll
             {
                 extended = false;                                                               //...then it's not extended. Duh!
             }
+
+            Events["DoAllAntenna"].active = false;
+            AYA_PAW_Refresh.Instance.RefreshPAWMenu(this.part, AYA_PAW_Refresh.AYA_Module.antenna, "DoAllAntenna");
+
+
+            if (extended)         //If it's retracted...
+            {
+                // Events["DoAllAntenna"].guiName = "Extend all antennae";                          //Set it to extend.
+                Events["DoAllAntenna"].guiName = Localizer.Format("#AYA_ANTENNA_UI_ANTENNA_EXTEND_ALL");    //Set it to extend.
+                Events["DoAllAntenna"].active = true;
+            }
+            else
+            {
+                if (callingPart.retractable)
+                {
+
+                    // Events["DoAllAntenna"].guiName = "Retract all antennae";                         //set it to retract.
+                    Events["DoAllAntenna"].guiName = Localizer.Format("#AYA_ANTENNA_UI_ANTENNA_RETRACT_ALL");      //set it to retract.
+                    Events["DoAllAntenna"].active = true;
+                }
+            }
+
+
             foreach (Part eachPart in vessel.Parts)                                             //Cycle through each part on the vessel
             {
                 var thisPart = eachPart.FindModuleImplementing<ModuleDeployableAntenna>();   //If it's an antenna...
@@ -42,9 +65,26 @@ namespace AllYAll
             }
         }
 
-        public void FixedUpdate()                                                               //This runs every second and makes sure the menus are correct.
+        public void Start()
         {
-            if (HighLogic.LoadedScene == GameScenes.EDITOR)
+            this.part.AddOnMouseEnter(OnMouseEnter());
+        }
+        Part.OnActionDelegate OnMouseEnter()
+        {
+            UpdatePAWMenu();
+            return null;
+        }
+        public void OnDestroy()
+        {
+            this.part.RemoveOnMouseEnter(OnMouseEnter());
+        }
+        internal bool EventStatus(string e)
+        {
+            return Events[e].active;
+        }
+        public void UpdatePAWMenu()                                                               //This runs every second and makes sure the menus are correct.
+        {
+            if (HighLogic.LoadedScene != GameScenes.FLIGHT)
                 return;
 
             var thisPart = this.part.FindModuleImplementing<ModuleDeployableAntenna>();      //This is so the below code knows the part it's dealing with is an antenna.

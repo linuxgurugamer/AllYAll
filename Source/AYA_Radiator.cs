@@ -24,6 +24,11 @@ namespace AllYAll
             {
                 extended = false;                                                               //...then it's not extended. Duh!
             }
+
+            Events["DoAllRadiator"].active = false;
+            AYA_PAW_Refresh.Instance.RefreshPAWMenu(this.part, AYA_PAW_Refresh.AYA_Module.radiator, "DoAllRadiator");
+
+
             foreach (Part eachPart in vessel.Parts)                                             //Cycle through each part on the vessel
             {
                 var thisPart = eachPart.FindModuleImplementing<ModuleDeployableRadiator>();     //If it's a radiator...
@@ -41,9 +46,28 @@ namespace AllYAll
             }
         }
 
-        public void FixedUpdate()
+        public void Start()
         {
-            if (HighLogic.LoadedScene == GameScenes.EDITOR)
+            this.part.AddOnMouseEnter(OnMouseEnter());
+        }
+        Part.OnActionDelegate OnMouseEnter()
+        {
+            UpdatePAWMenu();
+            return null;
+        }
+        public void OnDestroy()
+        {
+            this.part.RemoveOnMouseEnter(OnMouseEnter());
+        }
+
+        internal bool EventStatus(string e)
+        {
+            return Events[e].active;
+        }
+
+        public void UpdatePAWMenu()
+        {
+            if (HighLogic.LoadedScene != GameScenes.FLIGHT)
                 return;
 
             var thisPart = this.part.FindModuleImplementing<ModuleDeployableRadiator>();        //This is so the below code knows the part it's dealing with is a radiator.

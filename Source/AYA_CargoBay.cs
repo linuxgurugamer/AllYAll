@@ -3,6 +3,7 @@
 // License: CC SA
 
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -13,7 +14,7 @@ namespace AllYAll
 {
 
     // ############# CARGO BAYS ############### //
-    
+
     public class AYA_CargoBay : PartModule
     {
 
@@ -22,38 +23,58 @@ namespace AllYAll
         {
             bool cargoBayOpen = false;
 
-            var callingPart = this.part.FindModuleImplementing<ModuleAnimateGeneric>();   //Variable for the part doing the work.
-            var thisPartCargoBay = this.part.FindModuleImplementing<ModuleCargoBay>();
+            var callingParts = this.part.FindModulesImplementing<ModuleAnimateGeneric>();   //Variable for the part doing the work.
+            var thisPartCargoBays = this.part.FindModulesImplementing<ModuleCargoBay>();
 
-            if ((callingPart.animSwitch & thisPartCargoBay.closedPosition == 1) ||
-                      (!callingPart.animSwitch & thisPartCargoBay.closedPosition == 0))
+            foreach (var callingPart in callingParts)
             {
-                cargoBayOpen = true;                                                      //...then it's open. Duh!
+                foreach (var thisPartCargoBay in thisPartCargoBays)
+                {
+                    if ((callingPart.animTime == 0 && thisPartCargoBay.closedPosition == 1) ||
+                              (callingPart.animTime >0 && thisPartCargoBay.closedPosition == 0))
+                    {
+                        cargoBayOpen = true;                                                      //...then it's open. Duh!
+                    }
+                }
             }
 
+            Events["DoAllBays"].active = false;
+            AYA_PAW_Refresh.Instance.RefreshPAWMenu(this.part, AYA_PAW_Refresh.AYA_Module.cargo, "DoAllBays");
+          
             foreach (Part eachPart in vessel.Parts)
             {
-                var thisPartModule = eachPart.FindModuleImplementing<ModuleCargoBay>();
-                if (thisPartModule != null)
+                // Use the lastDeployModuleIndex to avoid activating 2 different ModuleCargoBay modules which
+                // both use the same index
+                int lastDeployModuleIndex = -1;
+           
+                var thisPartModules = eachPart.FindModulesImplementing<ModuleCargoBay>();
+                foreach (var thisPartModule in thisPartModules)
                 {
-                    var thisPartAnimate = eachPart.FindModuleImplementing<ModuleAnimateGeneric>();
-                    if (thisPartAnimate != null)
+                    if (thisPartModule != null &&  lastDeployModuleIndex!= thisPartModule.DeployModuleIndex)
                     {
-                        KSPActionParam param = new KSPActionParam(KSPActionGroup.Custom01, KSPActionType.Activate);
-                        if (cargoBayOpen)
+                        lastDeployModuleIndex = thisPartModule.DeployModuleIndex;
+                        var thisPartAnimates = eachPart.FindModulesImplementing<ModuleAnimateGeneric>();
+                        foreach (var thisPartAnimate in thisPartAnimates)
                         {
-                            if ((thisPartAnimate.animSwitch & thisPartModule.closedPosition == 1) ||
-                                (!thisPartAnimate.animSwitch & thisPartModule.closedPosition == 0))
+                            if (thisPartAnimate != null)
                             {
-                                thisPartAnimate.ToggleAction(param);
-                            }
-                        }
-                        else
-                        {
-                            if ((!thisPartAnimate.animSwitch & thisPartModule.closedPosition == 1) ||
-                                (thisPartAnimate.animSwitch & thisPartModule.closedPosition == 0))
-                            {
-                                 thisPartAnimate.ToggleAction(param);
+                                KSPActionParam param = new KSPActionParam(KSPActionGroup.Custom01, KSPActionType.Activate);
+                                if (cargoBayOpen)
+                                {
+                                    if ((thisPartAnimate.animTime == 0 && thisPartModule.closedPosition == 1) ||
+                                        (thisPartAnimate.animTime >0 && thisPartModule.closedPosition == 0))
+                                    {
+                                        thisPartAnimate.ToggleAction(param);
+                                    }
+                                }
+                                else
+                                {
+                                    if ((thisPartAnimate.animTime >0 && thisPartModule.closedPosition == 1) ||
+                                        (thisPartAnimate.animTime == 0 && thisPartModule.closedPosition == 0))
+                                    {
+                                        thisPartAnimate.ToggleAction(param);
+                                    }
+                                }
                             }
                         }
                     }
@@ -61,34 +82,61 @@ namespace AllYAll
             }
         }
 
-
-        public void FixedUpdate()
+        public void Start()
         {
-            if (HighLogic.LoadedScene == GameScenes.EDITOR)
+            this.part.AddOnMouseEnter(OnMouseEnter());
+        }
+        Part.OnActionDelegate OnMouseEnter()
+        {
+            UpdatePAWMenu();
+            return null;
+        }
+        public void OnDestroy()
+        {
+            this.part.RemoveOnMouseEnter(OnMouseEnter());
+        }
+
+        internal bool EventStatus(string e)
+        {
+            return Events[e].active;
+        }
+
+        public void UpdatePAWMenu()
+        {
+            if (HighLogic.LoadedScene != GameScenes.FLIGHT)
                 return;
 
-            var thisPart = this.part.FindModuleImplementing<ModuleCargoBay>();                  //This is so the below code knows the part it's dealing with is a cargo bay.
-            if (thisPart != null)                                                               //Verify it's actually a cargo bay)
+            var thisParts = this.part.FindModulesImplementing<ModuleCargoBay>();                  //This is so the below code knows the part it's dealing with is a cargo bay.
+            foreach (var thisPart in thisParts)
             {
-                var thisPartAnimate = this.part.FindModuleImplementing<ModuleAnimateGeneric>();
-                if (thisPartAnimate != null)
+                if (thisPart != null)                                                               //Verify it's actually a cargo bay)
                 {
-                    if (thisPartAnimate.aniState == ModuleAnimateGeneric.animationStates.MOVING)
+                    var thisPartAnimates = this.part.FindModulesImplementing<ModuleAnimateGeneric>();
+                    foreach (var thisPartAnimate in thisPartAnimates)
                     {
-                        Events["DoAllBays"].active = false;
-                    }
-                    if (( thisPartAnimate.animSwitch & thisPart.closedPosition == 1) ||
-                        (!thisPartAnimate.animSwitch & thisPart.closedPosition == 0))
-                    {
-                        // Events["DoAllBays"].guiName = "Close all bays";
-                        Events["DoAllBays"].guiName = Localizer.Format("#AYA_ANTENNA_UI_CARGO_BAYS_CLOSE_ALL");
-                        Events["DoAllBays"].active = true;
-                    }
-                    else
-                    {
-                        // Events["DoAllBays"].guiName = "Open all bays";
-                        Events["DoAllBays"].guiName = Localizer.Format("#AYA_ANTENNA_UI_CARGO_BAYS_OPEN_ALL");
-                        Events["DoAllBays"].active = true;
+                        if (thisPartAnimate != null)
+                        {
+                            if (thisPartAnimate.aniState == ModuleAnimateGeneric.animationStates.MOVING)
+                            {
+                                Events["DoAllBays"].active = false;
+                                break;
+                            }
+                            Debug.Log("part: " + this.part.partInfo.title + ", animTime: " + thisPartAnimate.animTime + ", closedPosition: " + thisPart.closedPosition + ", animSwitch: " + thisPartAnimate.animSwitch);
+
+                            if ((thisPartAnimate.animTime == 0 && thisPart.closedPosition == 1) ||
+                                (thisPartAnimate.animTime>0 && thisPart.closedPosition == 0))
+                            {
+                                // Events["DoAllBays"].guiName = "Close all bays";
+                                Events["DoAllBays"].guiName = Localizer.Format("#AYA_ANTENNA_UI_CARGO_BAYS_CLOSE_ALL");
+                                Events["DoAllBays"].active = true;
+                            }
+                            else
+                            {
+                                // Events["DoAllBays"].guiName = "Open all bays";
+                                Events["DoAllBays"].guiName = Localizer.Format("#AYA_ANTENNA_UI_CARGO_BAYS_OPEN_ALL");
+                                Events["DoAllBays"].active = true;
+                            }
+                        }
                     }
                 }
             }
