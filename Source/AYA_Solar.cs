@@ -8,7 +8,10 @@ using System.Linq;
 using System.Text;
 using UnityEngine;
 using KSP.Localization;
+#if false
 using NearFutureSolar;
+#endif
+
 
 namespace AllYAll
 {
@@ -19,7 +22,7 @@ namespace AllYAll
         [KSPEvent(guiActive = true, guiActiveEditor = false, guiName = "#AYA_ANTENNA_UI_SOLAR_EXTEND_ALL")]
         public void DoAllSolar()                                                                //This runs every time you click "extend all" or "retract all"
         {
-            
+
             bool extended = true;                                                               //This is the check if we are extending or retracting all, default to retracting.
             var callingPart = this.part.FindModuleImplementing<ModuleDeployableSolarPanel>();   //Variable for the part doing the work.
             if (callingPart != null && callingPart.deployState == ModuleDeployablePart.DeployState.RETRACTED)          //If the calling part is retracted...
@@ -29,6 +32,7 @@ namespace AllYAll
             //
             // Same thing for the NearFuture Solar, if it's loaded
             //
+#if false
             if (NFSPresent)
             {
                 var callingPart2 = this.part.FindModuleImplementing<ModuleCurvedSolarPanel>();      //Variable for the part doing the work.
@@ -37,7 +41,7 @@ namespace AllYAll
                     extended = false;                                                               //...then it's not extended. Duh!
                 }
             }
-
+#endif
             Events["DoAllSolar"].active = false;
             AYA_PAW_Refresh.Instance.RefreshPAWMenu(this.part, AYA_PAW_Refresh.AYA_Module.solar, "DoAllSolar");
 
@@ -57,6 +61,7 @@ namespace AllYAll
                 }
             }
 
+#if false
             //
             // Now do the nearFutureSolar
             //
@@ -64,7 +69,17 @@ namespace AllYAll
             {
                 foreach (Part eachPart in vessel.Parts)                                             //Cycle through each part on the vessel
                 {
-                    var thisPart = eachPart.FindModuleImplementing<ModuleCurvedSolarPanel>();   //If it's a solar panel...
+                    ModuleCurvedSolarPanel thisPart = eachPart.FindModuleImplementing<ModuleCurvedSolarPanel>();   //If it's a solar panel...
+                    foreach (var m in eachPart.Modules)
+                    {
+                        Debug.Log("m.moduleName: " + m.moduleName);
+                        if (m.moduleName == "ModuleCurvedSolarPanel")
+                        {
+                            Debug.Log("ModuleCurvedSolarPanel found by name");
+                            if (m == thisPart)
+                                Debug.Log("m == thisPart");
+                        }
+                    }
                     if (thisPart != null && thisPart.Deployable)                           //..and it has an animation (rules out ox-stats and the like)
                     {
                         if (extended)                                                               //then if the calling part was extended...
@@ -79,11 +94,30 @@ namespace AllYAll
                 }
             }
 
+        
+#endif
         }
         bool NFSPresent;
+        private Type _tNearFutureSolar;
         public void Start()
         {
+#if false
             NFSPresent = AssemblyLoader.loadedAssemblies.Any(a => a.assembly.GetName().Name == "NearFutureSolar");
+            if (NFSPresent)
+            {
+                _tNearFutureSolar = DMagicFactory.getType("ModuleDeployableSolarPanel");
+
+                // string animationName
+                // ModuleDeployablePart.DeployState deployState
+                // bool retractable
+                // bool Deployable
+
+                // Retract()
+                // Deploy()
+                System.Reflection.MethodInfo _MIexperimentCanConduct = tDMAPI.GetMethod("experimentCanConduct", BindingFlags.Public | BindingFlags.Static | BindingFlags.FlattenHierarchy);
+
+            }
+#endif
             this.part.AddOnMouseEnter(OnMouseEnter());
         }
         Part.OnActionDelegate OnMouseEnter()
@@ -129,6 +163,7 @@ namespace AllYAll
                 }
             }
 
+#if false
             if (NFSPresent)
             {
                 var thisPart2 = this.part.FindModuleImplementing<ModuleCurvedSolarPanel>();      //This is so the below code knows the part it's dealing with is a solar panel.
@@ -154,7 +189,7 @@ namespace AllYAll
                     }
                 }
             }
-
+#endif
         }
     }
 }

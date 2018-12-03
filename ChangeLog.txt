@@ -1,4 +1,7 @@
-﻿0.1.16 (unreleased)
+﻿0.11.16.1
+	Disabled the NearFutureSolar to avoid having a direct reference
+
+0.11.16 
 	Added NearFutureSolar panels to AYA_Solar
 	Added support for multiple ModuleAnimateGeneric and multiple ModuleCargoBay modules
 	Added patch for Mark IV Cargo Tail to fix 2 small bugs:
