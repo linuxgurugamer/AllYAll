@@ -3,14 +3,12 @@
 // License: CC SA
 
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using UnityEngine;
 using KSP.Localization;
-#if false
+
+using System.Reflection;
 using NearFutureSolar;
-#endif
+
 
 
 namespace AllYAll
@@ -19,6 +17,10 @@ namespace AllYAll
 
     public class AYA_Solar : PartModule
     {
+        NFSWrapper.NFSCurvedPanel nfsWrapper = null;
+        static bool NFSPresent;
+        NFSWrapper.NFSCurvedPanel nfsCurvedPanelModule;
+
         [KSPEvent(guiActive = true, guiActiveEditor = false, guiName = "#AYA_ANTENNA_UI_SOLAR_EXTEND_ALL")]
         public void DoAllSolar()                                                                //This runs every time you click "extend all" or "retract all"
         {
@@ -32,16 +34,17 @@ namespace AllYAll
             //
             // Same thing for the NearFuture Solar, if it's loaded
             //
-#if false
             if (NFSPresent)
             {
-                var callingPart2 = this.part.FindModuleImplementing<ModuleCurvedSolarPanel>();      //Variable for the part doing the work.
-                if (callingPart2 != null && callingPart2.State == ModuleDeployablePart.DeployState.RETRACTED)               //If the calling part is retracted...
+                nfsCurvedPanelModule = NFSWrapper.NFSCurvedPanel.GetNFSModule(this.part);
+
+                if (nfsCurvedPanelModule != null)
                 {
-                    extended = false;                                                               //...then it's not extended. Duh!
-                }
+                    if (nfsCurvedPanelModule.DeployState == ModuleDeployablePart.DeployState.RETRACTED)
+                        extended = false;
+                }               
             }
-#endif
+
             Events["DoAllSolar"].active = false;
             AYA_PAW_Refresh.Instance.RefreshPAWMenu(this.part, AYA_PAW_Refresh.AYA_Module.solar, "DoAllSolar");
 
@@ -59,67 +62,36 @@ namespace AllYAll
                         thisPart.Extend();                                                      //Extend it
                     }
                 }
-            }
 
-#if false
-            //
-            // Now do the nearFutureSolar
-            //
-            if (NFSPresent)
-            {
-                foreach (Part eachPart in vessel.Parts)                                             //Cycle through each part on the vessel
+
+                //
+                // Now do the nearFutureSolar
+                //
+                if (NFSPresent)
                 {
-                    ModuleCurvedSolarPanel thisPart = eachPart.FindModuleImplementing<ModuleCurvedSolarPanel>();   //If it's a solar panel...
-                    foreach (var m in eachPart.Modules)
-                    {
-                        Debug.Log("m.moduleName: " + m.moduleName);
-                        if (m.moduleName == "ModuleCurvedSolarPanel")
-                        {
-                            Debug.Log("ModuleCurvedSolarPanel found by name");
-                            if (m == thisPart)
-                                Debug.Log("m == thisPart");
-                        }
-                    }
-                    if (thisPart != null && thisPart.Deployable)                           //..and it has an animation (rules out ox-stats and the like)
+                    nfsCurvedPanelModule = NFSWrapper.NFSCurvedPanel.GetNFSModule(eachPart);
+                    if (nfsCurvedPanelModule != null && nfsCurvedPanelModule.isDeployable)                           //..and it has an animation (rules out ox-stats and the like)
                     {
                         if (extended)                                                               //then if the calling part was extended...
                         {
-                            thisPart.Retract();                                                     //Retract it
+                            nfsCurvedPanelModule.Retract();                                                     //Retract it
                         }
                         else                                                                        //otherwise...
                         {
-                            thisPart.Deploy();                                                      //Extend it
+                            nfsCurvedPanelModule.Deploy();                                                      //Extend it
                         }
                     }
+
                 }
             }
-
-        
-#endif
         }
-        bool NFSPresent;
-        private Type _tNearFutureSolar;
+        
         public void Start()
         {
-#if false
-            NFSPresent = AssemblyLoader.loadedAssemblies.Any(a => a.assembly.GetName().Name == "NearFutureSolar");
-            if (NFSPresent)
-            {
-                _tNearFutureSolar = DMagicFactory.getType("ModuleDeployableSolarPanel");
-
-                // string animationName
-                // ModuleDeployablePart.DeployState deployState
-                // bool retractable
-                // bool Deployable
-
-                // Retract()
-                // Deploy()
-                System.Reflection.MethodInfo _MIexperimentCanConduct = tDMAPI.GetMethod("experimentCanConduct", BindingFlags.Public | BindingFlags.Static | BindingFlags.FlattenHierarchy);
-
-            }
-#endif
+            NFSPresent = NFSWrapper.AssemblyExists;
             this.part.AddOnMouseEnter(OnMouseEnter());
         }
+
         Part.OnActionDelegate OnMouseEnter()
         {
             UpdatePAWMenu();
@@ -163,25 +135,26 @@ namespace AllYAll
                 }
             }
 
-#if false
             if (NFSPresent)
             {
-                var thisPart2 = this.part.FindModuleImplementing<ModuleCurvedSolarPanel>();      //This is so the below code knows the part it's dealing with is a solar panel.
-                if (thisPart2 != null && thisPart2.Deployable)                               //Verify it's actually a solar panel and has an animation (rules out ox-stats and the like)
+                nfsCurvedPanelModule = NFSWrapper.NFSCurvedPanel.GetNFSModule(this.part);
+                if (nfsCurvedPanelModule != null)
                 {
-                    if (thisPart2.State == ModuleDeployablePart.DeployState.EXTENDING ||
-                        thisPart2.State == ModuleDeployablePart.DeployState.RETRACTING)        //If it's extending or retracting...
+
+ 
+                    if (nfsCurvedPanelModule.DeployState == ModuleDeployablePart.DeployState.EXTENDING ||
+                        nfsCurvedPanelModule.DeployState == ModuleDeployablePart.DeployState.RETRACTING)        //If it's extending or retracting...
                     {
                         Events["DoAllSolar"].active = false;                                        //...you don't get no menu option!
                     }
 
-                    if (thisPart2.State == ModuleDeployablePart.DeployState.RETRACTED)         //If it's retracted...
+                    if (nfsCurvedPanelModule.DeployState == ModuleDeployablePart.DeployState.RETRACTED)         //If it's retracted...
                     {
                         // Events["DoAllSolar"].guiName = "Extend all solar";                          //Set it to extend.
                         Events["DoAllSolar"].guiName = Localizer.Format("#AYA_ANTENNA_UI_SOLAR_EXTEND_ALL");                         //Set it to extend.
                         Events["DoAllSolar"].active = true;
                     }
-                    if (thisPart2.State == ModuleDeployablePart.DeployState.EXTENDED)  //If it's extended AND retractable...
+                    if (nfsCurvedPanelModule.DeployState == ModuleDeployablePart.DeployState.EXTENDED)  //If it's extended AND retractable...
                     {
                         // Events["DoAllSolar"].guiName = "Retract all solar";                         //set it to retract.
                         Events["DoAllSolar"].guiName = Localizer.Format("#AYA_ANTENNA_UI_SOLAR_RETRACT_ALL");                         //set it to retract.
@@ -189,7 +162,173 @@ namespace AllYAll
                     }
                 }
             }
-#endif
+        }
+    }
+
+
+
+    /// <summary>
+    /// The Wrapper class to access Near Future Solar
+    /// </summary>
+    public class NFSWrapper
+    {
+        internal static System.Type NFSCurvedsolarPanelType;
+
+        /// <summary>
+        /// Whether we found the Near Future Solar assembly in the loadedassemblies.
+        ///
+        /// SET AFTER INIT
+        /// </summary>
+        public static Boolean AssemblyExists {
+            get {
+                if (_NFSWrapped == null) InitNFSWrapper();
+                return ((bool)_NFSWrapped == true && NFSCurvedsolarPanelType != null);
+            }
+        }
+
+        /// <summary>
+        /// Whether we managed to wrap all the methods/functions from the instance.
+        ///
+        /// SET AFTER INIT
+        /// </summary>
+        private static Boolean? _NFSWrapped;
+        
+
+        /// <summary>
+        /// This method will set up the Near Future Solar object and wrap all the methods/functions
+        /// </summary>
+        /// <returns></returns>
+        public static Boolean InitNFSWrapper()
+        {
+            //reset the internal objects
+            _NFSWrapped = false;
+            Debug.Log("Attempting to Grab Near Future Solar Types...");
+
+            //find the NFSCurvedsolarPanelType type
+            NFSCurvedsolarPanelType = getType("NearFutureSolar.ModuleCurvedSolarPanel");
+
+            if (NFSCurvedsolarPanelType == null)
+            {
+                return false;
+            }
+
+            Debug.Log("Near Future Solar Version: "+ NFSCurvedsolarPanelType.Assembly.GetName().Version.ToString());
+
+            _NFSWrapped = true;
+            return true;
+        }
+
+        internal static Type getType(string name)
+        {
+            Type type = null;
+            AssemblyLoader.loadedAssemblies.TypeOperation(t =>
+
+            {
+                if (t.FullName == name)
+                    type = t;
+            }
+            );
+
+            if (type != null)
+            {
+                return type;
+            }
+            return null;
+        }
+
+        public class NFSCurvedPanel
+        {
+            System.Object actualNFSCurvedPanel;
+            FieldInfo animationName; 
+            FieldInfo Deployable;
+            PropertyInfo deployState;
+            MethodInfo DeployMethod;
+            MethodInfo RetractMethod;
+
+            internal NFSCurvedPanel(System.Object a)
+            {
+                actualNFSCurvedPanel = a;
+                
+
+                DeployMethod = NFSCurvedsolarPanelType.GetMethod("Deploy", BindingFlags.Public | BindingFlags.Instance);
+                RetractMethod = NFSCurvedsolarPanelType.GetMethod("Retract", BindingFlags.Public | BindingFlags.Instance);
+
+                animationName = NFSCurvedsolarPanelType.GetField("DeployAnimation");
+
+                deployState = NFSCurvedsolarPanelType.GetProperty("State");
+                Deployable = NFSCurvedsolarPanelType.GetField("Deployable");
+            }
+
+            static public  NFSWrapper.NFSCurvedPanel GetNFSModule(Part part)
+            {
+                foreach (var m in part.Modules)
+                {
+                    if (m.moduleName == "ModuleCurvedSolarPanel")
+                    {
+                        return  new NFSWrapper.NFSCurvedPanel(m);
+                    }
+                }
+                return null;
+            }
+
+            public string AnimationName
+            {
+                get { return (string)animationName.GetValue(actualNFSCurvedPanel); }
+            }
+            public ModuleDeployablePart.DeployState DeployState
+            {
+                get
+                {
+                    System.Object tmpObj = (System.Object)deployState.GetValue(actualNFSCurvedPanel, null);
+                    ModuleDeployablePart.DeployState tmpState = (ModuleDeployablePart.DeployState)tmpObj;
+                    return tmpState;
+                }
+            }
+
+            public bool isDeployable
+            {
+                get { return (bool)Deployable.GetValue(actualNFSCurvedPanel); }
+            }
+
+
+
+
+            /// <summary>
+            /// Deploy Panels
+            /// </summary>
+            /// <returns>Bool indicating success of call</returns>
+            public bool Deploy()
+            {
+                try
+                {
+                    DeployMethod.Invoke(actualNFSCurvedPanel, null);
+                    return true;
+                }
+                catch (Exception ex)
+                {
+                    Debug.Log("Deploy Failed: "+ ex.Message);
+                    return false;
+                }
+            }
+
+
+            /// <summary>
+            /// Retract Panels
+            /// </summary>
+            /// <returns>Bool indicating success of call</returns>
+            public bool Retract()
+            {
+                try
+                {
+                    RetractMethod.Invoke(actualNFSCurvedPanel, null);
+                    return true;
+                }
+                catch (Exception ex)
+                {
+                    Debug.Log("Retract Failed: " + ex.Message);
+                    return false;
+                }
+            }
         }
     }
 }

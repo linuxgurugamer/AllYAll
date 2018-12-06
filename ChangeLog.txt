@@ -1,4 +1,7 @@
-﻿0.11.16.1
+﻿0.11.16.2
+	Re-enabled the NearFutureSolar, using Reflection instead of direct reference
+
+0.11.16.1
 	Disabled the NearFutureSolar to avoid having a direct reference
 
 0.11.16 
