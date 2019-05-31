@@ -41,7 +41,7 @@
 
 # 8: AdditionalMods to include
 # 8:ConnectedLivingSpace
-NOT:1.4.5
+
 
 #
 # End of file
