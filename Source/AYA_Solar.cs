@@ -21,7 +21,7 @@ namespace AllYAll
         static bool NFSPresent;
         NFSWrapper.NFSCurvedPanel nfsCurvedPanelModule;
 
-        [KSPEvent(guiActive = true, guiActiveEditor = false, guiName = "#AYA_ANTENNA_UI_SOLAR_EXTEND_ALL")]
+        [KSPEvent(guiActive = true, guiActiveEditor = true, guiName = "#AYA_ANTENNA_UI_SOLAR_EXTEND_ALL")]
         public void DoAllSolar()                                                                //This runs every time you click "extend all" or "retract all"
         {
 
@@ -47,45 +47,58 @@ namespace AllYAll
 
             Events["DoAllSolar"].active = false;
             AYA_PAW_Refresh.Instance.RefreshPAWMenu(this.part, AYA_PAW_Refresh.AYA_Module.solar, "DoAllSolar");
-
-            foreach (Part eachPart in vessel.Parts)                                             //Cycle through each part on the vessel
+            if (HighLogic.LoadedSceneIsEditor)
             {
-                var thisPart = eachPart.FindModuleImplementing<ModuleDeployableSolarPanel>();   //If it's a solar panel...
-                if (thisPart != null && thisPart.animationName != "")                           //..and it has an animation (rules out ox-stats and the like)
+                foreach (Part eachPart in EditorLogic.fetch.ship.Parts)                                             //Cycle through each part on the vessel
                 {
-                    if (extended)                                                               //then if the calling part was extended...
-                    {
-                        thisPart.Retract();                                                     //Retract it
-                    }
-                    else                                                                        //otherwise...
-                    {
-                        thisPart.Extend();                                                      //Extend it
-                    }
+                    DoIt(eachPart, extended);
                 }
-
-
-                //
-                // Now do the nearFutureSolar
-                //
-                if (NFSPresent)
+            }
+            else
+            {
+                foreach (Part eachPart in vessel.Parts)                                             //Cycle through each part on the vessel
                 {
-                    nfsCurvedPanelModule = NFSWrapper.NFSCurvedPanel.GetNFSModule(eachPart);
-                    if (nfsCurvedPanelModule != null && nfsCurvedPanelModule.isDeployable)                           //..and it has an animation (rules out ox-stats and the like)
-                    {
-                        if (extended)                                                               //then if the calling part was extended...
-                        {
-                            nfsCurvedPanelModule.Retract();                                                     //Retract it
-                        }
-                        else                                                                        //otherwise...
-                        {
-                            nfsCurvedPanelModule.Deploy();                                                      //Extend it
-                        }
-                    }
-
+                    DoIt(eachPart, extended);
                 }
             }
         }
         
+        void DoIt(Part eachPart, bool extended)
+        {
+            var thisPart = eachPart.FindModuleImplementing<ModuleDeployableSolarPanel>();   //If it's a solar panel...
+            if (thisPart != null && thisPart.animationName != "")                           //..and it has an animation (rules out ox-stats and the like)
+            {
+                if (extended)                                                               //then if the calling part was extended...
+                {
+                    thisPart.Retract();                                                     //Retract it
+                }
+                else                                                                        //otherwise...
+                {
+                    thisPart.Extend();                                                      //Extend it
+                }
+            }
+
+
+            //
+            // Now do the nearFutureSolar
+            //
+            if (NFSPresent)
+            {
+                nfsCurvedPanelModule = NFSWrapper.NFSCurvedPanel.GetNFSModule(eachPart);
+                if (nfsCurvedPanelModule != null && nfsCurvedPanelModule.isDeployable)                           //..and it has an animation (rules out ox-stats and the like)
+                {
+                    if (extended)                                                               //then if the calling part was extended...
+                    {
+                        nfsCurvedPanelModule.Retract();                                                     //Retract it
+                    }
+                    else                                                                        //otherwise...
+                    {
+                        nfsCurvedPanelModule.Deploy();                                                      //Extend it
+                    }
+                }
+
+            }
+        }
         public void Start()
         {
             NFSPresent = NFSWrapper.AssemblyExists;

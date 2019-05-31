@@ -1,4 +1,11 @@
-﻿0.11.16.2
+﻿0.11.16.4
+	Enabled the following in the editor:
+		Solar panels
+		ActiveRadiator
+		Radiator
+		Cargo Bays
+
+0.11.16.2
 	Re-enabled the NearFutureSolar, using Reflection instead of direct reference
 
 0.11.16.1

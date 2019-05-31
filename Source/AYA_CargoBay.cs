@@ -18,7 +18,7 @@ namespace AllYAll
     public class AYA_CargoBay : PartModule
     {
 
-        [KSPEvent(guiActive = true, guiActiveEditor = false, guiName = "#AYA_ANTENNA_UI_CARGO_BAYS_OPEN_ALL")]
+        [KSPEvent(guiActive = true, guiActiveEditor = true, guiName = "#AYA_ANTENNA_UI_CARGO_BAYS_OPEN_ALL")]
         public void DoAllBays()
         {
             bool cargoBayOpen = false;
@@ -40,40 +40,54 @@ namespace AllYAll
 
             Events["DoAllBays"].active = false;
             AYA_PAW_Refresh.Instance.RefreshPAWMenu(this.part, AYA_PAW_Refresh.AYA_Module.cargo, "DoAllBays");
-          
-            foreach (Part eachPart in vessel.Parts)
+
+            if (HighLogic.LoadedSceneIsEditor)
             {
-                // Use the lastDeployModuleIndex to avoid activating 2 different ModuleCargoBay modules which
-                // both use the same index
-                int lastDeployModuleIndex = -1;
-           
-                var thisPartModules = eachPart.FindModulesImplementing<ModuleCargoBay>();
-                foreach (var thisPartModule in thisPartModules)
+                foreach (Part eachPart in EditorLogic.fetch.ship.Parts)                                             //Cycle through each part on the vessel
                 {
-                    if (thisPartModule != null &&  lastDeployModuleIndex!= thisPartModule.DeployModuleIndex)
+                    DoIt(eachPart, cargoBayOpen);
+                }
+            }
+            else
+            {
+                foreach (Part eachPart in vessel.Parts)                                             //Cycle through each part on the vessel
+                {
+                    DoIt(eachPart, cargoBayOpen);
+                }
+            }
+        }
+        void DoIt(Part eachPart, bool cargoBayOpen)
+        {
+            // Use the lastDeployModuleIndex to avoid activating 2 different ModuleCargoBay modules which
+            // both use the same index
+            int lastDeployModuleIndex = -1;
+
+            var thisPartModules = eachPart.FindModulesImplementing<ModuleCargoBay>();
+            foreach (var thisPartModule in thisPartModules)
+            {
+                if (thisPartModule != null && lastDeployModuleIndex != thisPartModule.DeployModuleIndex)
+                {
+                    lastDeployModuleIndex = thisPartModule.DeployModuleIndex;
+                    var thisPartAnimates = eachPart.FindModulesImplementing<ModuleAnimateGeneric>();
+                    foreach (var thisPartAnimate in thisPartAnimates)
                     {
-                        lastDeployModuleIndex = thisPartModule.DeployModuleIndex;
-                        var thisPartAnimates = eachPart.FindModulesImplementing<ModuleAnimateGeneric>();
-                        foreach (var thisPartAnimate in thisPartAnimates)
+                        if (thisPartAnimate != null)
                         {
-                            if (thisPartAnimate != null)
+                            KSPActionParam param = new KSPActionParam(KSPActionGroup.Custom01, KSPActionType.Activate);
+                            if (cargoBayOpen)
                             {
-                                KSPActionParam param = new KSPActionParam(KSPActionGroup.Custom01, KSPActionType.Activate);
-                                if (cargoBayOpen)
+                                if ((thisPartAnimate.animTime == 0 && thisPartModule.closedPosition == 1) ||
+                                    (thisPartAnimate.animTime > 0 && thisPartModule.closedPosition == 0))
                                 {
-                                    if ((thisPartAnimate.animTime == 0 && thisPartModule.closedPosition == 1) ||
-                                        (thisPartAnimate.animTime >0 && thisPartModule.closedPosition == 0))
-                                    {
-                                        thisPartAnimate.ToggleAction(param);
-                                    }
+                                    thisPartAnimate.ToggleAction(param);
                                 }
-                                else
+                            }
+                            else
+                            {
+                                if ((thisPartAnimate.animTime > 0 && thisPartModule.closedPosition == 1) ||
+                                    (thisPartAnimate.animTime == 0 && thisPartModule.closedPosition == 0))
                                 {
-                                    if ((thisPartAnimate.animTime >0 && thisPartModule.closedPosition == 1) ||
-                                        (thisPartAnimate.animTime == 0 && thisPartModule.closedPosition == 0))
-                                    {
-                                        thisPartAnimate.ToggleAction(param);
-                                    }
+                                    thisPartAnimate.ToggleAction(param);
                                 }
                             }
                         }
@@ -81,7 +95,6 @@ namespace AllYAll
                 }
             }
         }
-
         public void Start()
         {
             this.part.AddOnMouseEnter(OnMouseEnter());
@@ -103,8 +116,8 @@ namespace AllYAll
 
         public void UpdatePAWMenu()
         {
-            if (HighLogic.LoadedScene != GameScenes.FLIGHT)
-                return;
+            //if (HighLogic.LoadedScene != GameScenes.FLIGHT)
+            //    return;
 
             var thisParts = this.part.FindModulesImplementing<ModuleCargoBay>();                  //This is so the below code knows the part it's dealing with is a cargo bay.
             foreach (var thisPart in thisParts)

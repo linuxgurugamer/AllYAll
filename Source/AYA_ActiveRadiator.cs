@@ -17,7 +17,7 @@ namespace AllYAll
     {
         double turnOnTime = 0;
 
-        [KSPEvent(guiActive = true, guiActiveEditor = false, guiName = "#AYA_ANTENNA_UI_RADIATOR_ACTIVATE_ALL")]
+        [KSPEvent(guiActive = true, guiActiveEditor = true, guiName = "#AYA_ANTENNA_UI_RADIATOR_ACTIVATE_ALL")]
         public void DoAllActivateRadiator()
         {
             double ACTIVATION_TIME = 0;
@@ -37,40 +37,55 @@ namespace AllYAll
             Events["DoAllActivateRadiator"].active = false;
             AYA_PAW_Refresh.Instance.RefreshPAWMenu(this.part, AYA_PAW_Refresh.AYA_Module.activeradiator, "DoAllActivateRadiator");
 
-
-            foreach (Part eachPart in vessel.Parts)                                             //Cycle through each part on the vessel
+            if(HighLogic.LoadedSceneIsEditor)
             {
-                var thisPart = eachPart.FindModuleImplementing<ModuleActiveRadiator>();     //If it's a radiator...
-                if (thisPart != null)                           
+                foreach (Part eachPart in EditorLogic.fetch.ship.Parts)                                             //Cycle through each part on the vessel
                 {
-                    //bool retractable = true;
-                    var extendablePart = eachPart.FindModuleImplementing<ModuleDeployableRadiator>();
-                    //if (extendablePart != null && extendablePart.animationName != "")
-                    //{
-                    //    if (extendablePart.deployState == ModuleDeployablePart.DeployState.RETRACTED)
-                    //        retractable = false;
-                    //}
-                   // if (retractable)
-                    {
-                        ACTIVATION_TIME++;
-                        if (!isCooling)                          
-                        {
-                            if (extendablePart != null)
-                                extendablePart.Extend();
-                            thisPart.Activate();                 
-                        }
-                        else                                  
-                        {
-                            if (extendablePart != null)
-                                extendablePart.Retract();
-                            thisPart.Shutdown();                 
-                        }
-                    }
+                    ACTIVATION_TIME = DoIt(eachPart, isCooling);
+                }
+            }
+            else
+            {
+                foreach (Part eachPart in vessel.Parts)                                             //Cycle through each part on the vessel
+                {
+                    ACTIVATION_TIME = DoIt(eachPart, isCooling);  
                 }
             }
             turnOnTime = Planetarium.GetUniversalTime() + ACTIVATION_TIME;
         }
 
+        double DoIt(Part eachPart, bool isCooling)
+        {
+            double ACTIVATION_TIME = 0;
+            var thisPart = eachPart.FindModuleImplementing<ModuleActiveRadiator>();     //If it's a radiator...
+            if (thisPart != null)
+            {
+                //bool retractable = true;
+                var extendablePart = eachPart.FindModuleImplementing<ModuleDeployableRadiator>();
+                //if (extendablePart != null && extendablePart.animationName != "")
+                //{
+                //    if (extendablePart.deployState == ModuleDeployablePart.DeployState.RETRACTED)
+                //        retractable = false;
+                //}
+                // if (retractable)
+                {
+                    ACTIVATION_TIME++;
+                    if (!isCooling)
+                    {
+                        if (extendablePart != null)
+                            extendablePart.Extend();
+                        thisPart.Activate();
+                    }
+                    else
+                    {
+                        if (extendablePart != null)
+                            extendablePart.Retract();
+                        thisPart.Shutdown();
+                    }
+                }
+            }
+            return ACTIVATION_TIME;
+        }
         public void Start()
         {
             this.part.AddOnMouseEnter(OnMouseEnter());
