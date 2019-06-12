@@ -1,9 +1,5 @@
 ﻿using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using UnityEngine;
-using KSP.Localization;
 
 namespace AllYAll
 {
@@ -11,7 +7,7 @@ namespace AllYAll
     public class AYA_PAW_Refresh : MonoBehaviour
     {
         public static AYA_PAW_Refresh Instance;
-        public enum AYA_Module { cargo, radiator, antenna, drill, fuelcell, activeradiator, sas, solar };
+        public enum AYA_Module { cargo, radiator, antenna, drill, fuelcell, activeradiator, sas, solar, genericAnimation };
         public void Start()
         {
             DontDestroyOnLoad(this);
@@ -45,13 +41,16 @@ namespace AllYAll
                     StartCoroutine(SaSDelayedUpdatePAWMenu(p, e));
                     break;
 
-
                 case AYA_Module.drill:
-                    DrillDelayedUpdatePAWMenu(p, e);
+                    StartCoroutine(DrillDelayedUpdatePAWMenu(p, e));
                     break;
 
+                case AYA_Module.genericAnimation:
+                    StartCoroutine(GenericAnimationUpdatePAWMenu(p, e));
+                    break;
             }
         }
+
         public IEnumerator CargoDelayedUpdatePAWMenu(Part p, string e)
         {
             var thisPartCargoBay = p.FindModuleImplementing<AYA_CargoBay>();
@@ -59,7 +58,7 @@ namespace AllYAll
             while (thisPartCargoBay.EventStatus(e) == false)
             {
                 yield return new WaitForSeconds(0.25f);
-                if (p.vessel == FlightGlobals.ActiveVessel)
+                if (HighLogic.LoadedSceneIsEditor || p.vessel == FlightGlobals.ActiveVessel)
                 {
                     //var thisPartCargoBay = p.FindModuleImplementing<AYA_CargoBay>();
                     thisPartCargoBay.UpdatePAWMenu();
@@ -185,6 +184,26 @@ namespace AllYAll
                 else
                     break;
             }
+        }
+
+        public IEnumerator GenericAnimationUpdatePAWMenu(Part p, string e)
+        {
+            var thisAYA_MAG = p.FindModuleImplementing<AYA_ModuleAnimateGeneric>();
+
+            while (thisAYA_MAG.EventStatus(e) == false)
+            {
+                yield return new WaitForSeconds(0.25f);
+                if (HighLogic.LoadedSceneIsEditor || p.vessel == FlightGlobals.ActiveVessel)
+                {
+                    //var thisPartCargoBay = p.FindModuleImplementing<AYA_CargoBay>();
+                    thisAYA_MAG.UpdatePAWMenu();
+                }
+                else
+                {
+                    break;
+                }
+            }
+
         }
     }
 

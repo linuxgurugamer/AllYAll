@@ -2,11 +2,7 @@
 // By 5thHorseman with much help from many others
 // License: CC SA
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using UnityEngine;
+
 using KSP.Localization;
 
 namespace AllYAll

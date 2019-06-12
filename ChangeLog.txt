@@ -1,4 +1,16 @@
-﻿0.11.16.4
+﻿0.11.17
+	Fixed bug in PAW for drills, when extending or retracting all, menu would not update properly
+	Deleted unnecessary "using" lines
+	Added general purpose AYA_ModuleGenericAnimation
+		All parameters for ModuleGenericAnimation are valid
+		Following new values are used:
+			extendAll 		Message to display in PAW when parts are retracted.  Defaults to: "Extend all parts"
+			retractAll		Message for when parts are extended/deployed.  Defaults to:  "Retract all parts"
+			closedPosition	The animation value for when the parts are closed.  Defaults to 0, 
+							if the parts are closed when the animation is run then set this equal to 1
+
+
+0.11.16.4
 	Enabled the following in the editor:
 		Solar panels
 		ActiveRadiator

@@ -7,7 +7,6 @@ using UnityEngine;
 using KSP.Localization;
 
 using System.Reflection;
-using NearFutureSolar;
 
 
 

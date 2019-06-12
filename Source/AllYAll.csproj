@@ -41,6 +41,7 @@
     <Compile Include="AYA_Drill.cs" />
     <Compile Include="AYA_Engine.cs" />
     <Compile Include="AYA_ModuleAnimateGeneric.cs" />
+    <Compile Include="AYA_ModuleAnimateGeneric2.cs" />
     <Compile Include="AYA_PAW_Refresh.cs" />
     <Compile Include="AYA_Radiator.cs" />
     <Compile Include="AYA_SAS.cs" />
