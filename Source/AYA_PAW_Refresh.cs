@@ -14,7 +14,7 @@ namespace AllYAll
             Instance = this;
         }
 
-        internal void RefreshPAWMenu(Part p, AYA_Module m, string e)
+        internal void RefreshPAWMenu(Part p, AYA_Module m, string e, string animName = "")
         {
             switch (m)
             {
@@ -46,7 +46,7 @@ namespace AllYAll
                     break;
 
                 case AYA_Module.genericAnimation:
-                    StartCoroutine(GenericAnimationUpdatePAWMenu(p, e));
+                    StartCoroutine(GenericAnimationUpdatePAWMenu(p, e, animName));
                     break;
             }
         }
@@ -186,10 +186,25 @@ namespace AllYAll
             }
         }
 
-        public IEnumerator GenericAnimationUpdatePAWMenu(Part p, string e)
+        public IEnumerator GenericAnimationUpdatePAWMenu(Part p, string e, string animName)
         {
-            var thisAYA_MAG = p.FindModuleImplementing<AYA_ModuleAnimateGeneric>();
-
+            AYA_ModuleAnimateGeneric thisAYA_MAG = null;
+            var allsAYA_MAG = p.FindModulesImplementing<AYA_ModuleAnimateGeneric>();
+            foreach (var m in allsAYA_MAG)
+            {
+                if (m.animationName == animName)
+                {
+                    thisAYA_MAG = m;
+                    break;
+                }
+            }
+            if (thisAYA_MAG == null)
+                yield return null;
+            if (thisAYA_MAG.isOneShot)
+            {
+                thisAYA_MAG.UpdatePAWMenu();
+                yield return null;
+            }
             while (thisAYA_MAG.EventStatus(e) == false)
             {
                 yield return new WaitForSeconds(0.25f);

@@ -1,4 +1,7 @@
-﻿0.11.17
+﻿0.11.17.1
+	Fixed the AYA_ModuleGenericAnimation to allow multiple different modules in a single part
+
+0.11.17
 	Fixed bug in PAW for drills, when extending or retracting all, menu would not update properly
 	Deleted unnecessary "using" lines
 	Added general purpose AYA_ModuleGenericAnimation

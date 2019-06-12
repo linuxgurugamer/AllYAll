@@ -5,6 +5,7 @@
 using System.Collections.Generic;
 
 
+
 namespace AllYAll
 {
 
@@ -29,23 +30,30 @@ namespace AllYAll
         {
             bool partExtended = false;
 
-            List< AYA_ModuleAnimateGeneric> callingParts = this.part.FindModulesImplementing<AYA_ModuleAnimateGeneric>();   //Variable for the part doing the work.
+            List< AYA_ModuleAnimateGeneric> callingPartModules = this.part.FindModulesImplementing<AYA_ModuleAnimateGeneric>();   //Variable for the part doing the work.
             List< AYA_ModuleAnimateGeneric> theseAnimatedParts = this.part.FindModulesImplementing<AYA_ModuleAnimateGeneric>();
 
-            foreach (var callingPart in callingParts) // Usually only one, but in case a part has multiple AYA_ModuleanimateGenerics
+            foreach (var callingPartModule in callingPartModules) // Usually only one, but in case a part has multiple AYA_ModuleanimateGenerics
             {
-                foreach (var thisAnimatedPart in theseAnimatedParts)
+                if (callingPartModule.animationName == this.animationName)
                 {
-                    if ((callingPart.animTime == 0 && thisAnimatedPart.closedPosition == 1) ||
-                              (callingPart.animTime > 0 && thisAnimatedPart.closedPosition == 0))
+                    foreach (var thisAnimatedPart in theseAnimatedParts)
                     {
-                        partExtended = true;                                                      //...then it's open. Duh!
+                        if (thisAnimatedPart.animationName == this.animationName)
+                        {
+                            if ((callingPartModule.animTime == 0 && thisAnimatedPart.closedPosition == 1) ||
+                                      (callingPartModule.animTime > 0 && thisAnimatedPart.closedPosition == 0))
+                            {
+                                partExtended = true;                                                      //...then it's open. Duh!
+                            }
+                        }
                     }
                 }
             }
 
             Events["DoAllIdenticalParts"].active = false;
-            AYA_PAW_Refresh.Instance.RefreshPAWMenu(this.part, AYA_PAW_Refresh.AYA_Module.genericAnimation, "DoAllIdenticalParts");
+
+            AYA_PAW_Refresh.Instance.RefreshPAWMenu(this.part, AYA_PAW_Refresh.AYA_Module.genericAnimation, "DoAllIdenticalParts", this.animationName);
 
             if (HighLogic.LoadedSceneIsEditor)
             {
@@ -73,12 +81,13 @@ namespace AllYAll
             foreach (var thisPartModule in thisPartModules)
             {
                 //if (thisPartModule != null && lastDeployModuleIndex != thisPartModule.DeployModuleIndex)
+                if (thisPartModule.animationName == this.animationName)
                 {
                     //lastDeployModuleIndex = thisPartModule.DeployModuleIndex;
                     var thisPartAnimates = eachPart.FindModulesImplementing<AYA_ModuleAnimateGeneric>();
                     foreach (var thisPartAnimate in thisPartAnimates)
                     {
-                        if (thisPartAnimate != null)
+                        if (thisPartAnimate != null && thisPartAnimate.animationName == this.animationName)
                         {
                             KSPActionParam param = new KSPActionParam(KSPActionGroup.Custom01, KSPActionType.Activate);
                             if (partExtended)
@@ -126,12 +135,12 @@ namespace AllYAll
             var theseModules = this.part.FindModulesImplementing<AYA_ModuleAnimateGeneric>();       //This is so the below code knows the part it's dealing with is a AYA_ModuleAnimateGeneric.
             foreach (var thisPart in theseModules)
             {
-                if (thisPart != null)                                                               
+                if (thisPart != null && thisPart.animationName == this.animationName)                                                               
                 {
                     var thisPartAnimates = this.part.FindModulesImplementing<AYA_ModuleAnimateGeneric>();
                     foreach (var thisPartAnimate in thisPartAnimates)
                     {
-                        if (thisPartAnimate != null)
+                        if (thisPartAnimate != null && thisPartAnimate.animationName == this.animationName)
                         {
                             if (thisPartAnimate.aniState == animationStates.MOVING)
                             {
