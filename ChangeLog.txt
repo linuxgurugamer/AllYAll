@@ -1,4 +1,8 @@
-﻿0.11.17.1
+﻿0.11.17.2
+	Version bump for 1.7.2
+	Updated AssemblyVersion.tt for location-independent builds
+
+0.11.17.1
 	Fixed the AYA_ModuleGenericAnimation to allow multiple different modules in a single part
 
 0.11.17
