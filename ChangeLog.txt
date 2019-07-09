@@ -1,4 +1,7 @@
-﻿0.11.17.2
+﻿0.11.17.3
+	Added MM code to avoid adding AYA_Science to the kerbals in  the BG DLC to avoid getting duplicates 
+
+0.11.17.2
 	Version bump for 1.7.2
 	Updated AssemblyVersion.tt for location-independent builds
 
