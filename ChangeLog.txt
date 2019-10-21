@@ -1,4 +1,8 @@
-﻿0.11.17.3
+﻿0.11.18
+	Added InstallChecker
+	Rebuild for 1.8
+
+0.11.17.3
 	Added MM code to avoid adding AYA_Science to the kerbals in  the BG DLC to avoid getting duplicates 
 
 0.11.17.2
