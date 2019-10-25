@@ -1,4 +1,7 @@
-﻿0.11.18
+﻿0.11.18.1
+	Updated MiniAVC.dll to 1.4.0
+
+0.11.18
 	Added InstallChecker
 	Rebuild for 1.8
 
