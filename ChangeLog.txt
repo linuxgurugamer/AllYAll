@@ -1,4 +1,7 @@
-﻿0.11.18.2
+﻿0.11.18.3
+	Really did the MiniAVC update
+
+0.11.18.2
 	Updated MiniAVC.dll to 1.4.0.2 to fix a nasty CTD
 
 0.11.18.1
