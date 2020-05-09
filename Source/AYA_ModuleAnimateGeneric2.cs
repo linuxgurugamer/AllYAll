@@ -147,7 +147,7 @@ namespace AllYAll
                                 Events["DoAllIdenticalParts"].active = false;
                                 break;
                             }
-                            //Debug.Log("part: " + this.part.partInfo.title + ", animTime: " + thisPartAnimate.animTime + ", closedPosition: " + thisPart.closedPosition + ", animSwitch: " + thisPartAnimate.animSwitch);
+                            //Log.Info("part: " + this.part.partInfo.title + ", animTime: " + thisPartAnimate.animTime + ", closedPosition: " + thisPart.closedPosition + ", animSwitch: " + thisPartAnimate.animSwitch);
 
                             if ((thisPartAnimate.animTime == 0 && thisPart.closedPosition == 1) ||
                                 (thisPartAnimate.animTime > 0 && thisPart.closedPosition == 0))

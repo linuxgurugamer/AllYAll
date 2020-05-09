@@ -80,7 +80,7 @@ namespace AllYAll
         }
         void doOnStop(float f1)
         {
-            Debug.Log("doOnStop, deployState: " + deployState);
+            Log.Info("doOnStop, deployState: " + deployState);
             switch (deployState)
             {
                 case ModuleDeployablePart.DeployState.EXTENDING:

@@ -39,7 +39,7 @@ namespace AllYAll
             var curStage = FlightGlobals.ActiveVessel.currentStage - 1;
             foreach (Part part in vessel.Parts)
             {
-                Debug.Log("Part: " + part.partInfo.title + ", inverseStage: " + part.inverseStage + ", curStage: " + curStage);
+                Log.Info("Part: " + part.partInfo.title + ", inverseStage: " + part.inverseStage + ", curStage: " + curStage);
                 if (part.inverseStage >= curStage)
                 {
                     foreach (PartModule pm in part.Modules) //change from part to partmodules

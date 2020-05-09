@@ -1,4 +1,10 @@
-﻿0.11.18.3
+﻿Changelog
+
+0.11.19
+	Updated DMagic code, for both the old DMAPI and the DMModuleScienceAnimatedGeneric
+	Updated MM code for AYA_Science and new kerbal models
+
+0.11.18.3
 	Really did the MiniAVC update
 
 0.11.18.2

@@ -9,22 +9,24 @@ namespace AllYAll
 {
     // ############# SCIENCE ############### //
 
+
     public class AYA_Science : PartModule
     {
-        private IList<ModuleScienceExperiment> _DMModuleScienceAnimates;
-        private IList<ModuleScienceExperiment> _DMModuleScienceAnimateGenerics;
-
+        bool DMInitted = false;
+        public void Start()
+        {
+            if (!DMInitted)
+            {
+                DMagicFactory.InitDMagicFactory();
+                DMInitted = true;
+            }
+        }
 
         [KSPEvent(guiActive = true, guiActiveEditor = false, guiName = "#AYA_ANTENNA_UI_SCIENCE_PERFORM_ALL")]
         public void DoAllScience()
         {
-            var DMagic = new DMagicFactory();
-#if false
-            if (Events["DoAllScience"].guiName == "Perform All Science")
-            {
-                Events["DoAllScience"].guiName = Localizer.Format("#AYA_ANTENNA_UI_SCIENCE_PERFORM_ALL");
-            }
-#endif
+
+            // var DMagic = new DMagicFactory();
             foreach (Part eachPart in vessel.Parts)                                 //Cycle through each part on the vessel
             {
                 foreach (ModuleScienceExperiment thisExperiment
@@ -51,86 +53,27 @@ namespace AllYAll
                         }
                         else if (!thisExperiment.Deployed)
                         {
-                            thisExperiment.DeployExperiment(); //Deploy the experiment if it's not already deployed
-                                                               //print ("AYA: Deployed experiment that had not been previously deployed.");
+                            Deploy(thisExperiment);
+                            //thisExperiment.DeployExperiment(); //Deploy the experiment if it's not already deployed
+                            //print ("AYA: Deployed experiment that had not been previously deployed.");
                         }
                         //else print ("AYA: Did not deploy experiment.");
                     }
                 }
 
             }
+        }
 
-
-            Vessel v = FlightGlobals.ActiveVessel;
-            _DMModuleScienceAnimates = null;
-            _DMModuleScienceAnimateGenerics = null;
-            if (v != null && HighLogic.LoadedScene == GameScenes.FLIGHT)
+        bool Deploy(ModuleScienceExperiment exp)
+        {
+            Log.Info("AYA_Science.Deploy, exp: " + exp.experimentID);
+            if (!(DMagicFactory.DMagic_IsInstalled && DMagicFactory.RunExperiment(exp.experimentID, exp)) &&
+                !(DMagicFactory.DMagicScienceAnimateGeneric_IsInstalled && DMagicFactory.RunSciAnimGenExperiment(exp.experimentID, exp)))
             {
-                _DMModuleScienceAnimates = v.FindPartModulesImplementing<ModuleScienceExperiment>().Where(x => DMagic.inheritsFromOrIsDMModuleScienceAnimate(x)).ToList();
-                _DMModuleScienceAnimateGenerics = v.FindPartModulesImplementing<ModuleScienceExperiment>().Where(x => DMagic.inheritsFromOrIsDMModuleScienceAnimateGeneric(x)).ToList();
+                exp.DeployExperiment();
+                return true;
             }
-
-            // If possible run with DMagic new API
-            if (_DMModuleScienceAnimateGenerics != null && _DMModuleScienceAnimateGenerics.Count > 0)
-            {
-                DMModuleScienceAnimateGeneric NewDMagicInstance = DMagic.GetDMModuleScienceAnimateGeneric();
-                if (NewDMagicInstance != null)
-                {
-                    IEnumerable<ModuleScienceExperiment> lm;
-
-                    lm = _DMModuleScienceAnimateGenerics.Where(x => (
-                       !x.Inoperable &&
-                       ((int)x.Fields.GetValue("experimentLimit") > 1 ? NewDMagicInstance.canConduct(x) : NewDMagicInstance.canConduct(x) && (x.rerunnable))
-                       ));
-                    if (lm != null)
-                    {
-                        ModuleScienceExperiment m = null;
-                        for (int i = 0; i < lm.Count(); i++)
-                        {
-                            m = lm.ElementAt(i);
-
-                            if (m != null)
-                            {
-                                //_logger.Debug("Running DMModuleScienceAnimateGenerics Experiment " + m.experimentID + " on part " + m.part.partInfo.name);
-                                NewDMagicInstance.gatherScienceData(m);
-
-                            }
-                        }
-                    }
-                }
-            }
-
-
-            // If possible run with DMagic DMAPI
-            if (_DMModuleScienceAnimates != null && _DMModuleScienceAnimates.Count > 0)
-            {
-                DMAPI DMAPIInstance = DMagic.GetDMAPI();
-                if (DMAPIInstance != null)
-                {
-                    IEnumerable<ModuleScienceExperiment> lm;
-
-                    lm = _DMModuleScienceAnimates.Where(x =>
-                   {
-                       return !x.Inoperable &&
-                       ((int)x.Fields.GetValue("experimentLimit") > 1 ? DMAPIInstance.experimentCanConduct(x) : DMAPIInstance.experimentCanConduct(x) && (x.rerunnable));
-                   });
-
-                    ModuleScienceExperiment m = null;
-
-                    for (int i = 0; i < lm.Count(); i++)
-                    {
-                        m = lm.ElementAt(i);
-                        if (m != null)
-                        {
-                            //_logger.Trace("Running DMModuleScienceAnimates Experiment " + m.experimentID + " on part " + m.part.partInfo.name);
-                            DMAPIInstance.deployDMExperiment(m);
-                        }
-                    }
-
-                }
-            }
-
-
+            return false;
         }
 
     }

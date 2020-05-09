@@ -214,7 +214,7 @@ namespace AllYAll
         {
             //reset the internal objects
             _NFSWrapped = false;
-            Debug.Log("Attempting to Grab Near Future Solar Types...");
+            Log.Info("Attempting to Grab Near Future Solar Types...");
 
             //find the NFSCurvedsolarPanelType type
             NFSCurvedsolarPanelType = getType("NearFutureSolar.ModuleCurvedSolarPanel");
@@ -224,7 +224,7 @@ namespace AllYAll
                 return false;
             }
 
-            Debug.Log("Near Future Solar Version: "+ NFSCurvedsolarPanelType.Assembly.GetName().Version.ToString());
+            Log.Info("Near Future Solar Version: "+ NFSCurvedsolarPanelType.Assembly.GetName().Version.ToString());
 
             _NFSWrapped = true;
             return true;
@@ -318,7 +318,7 @@ namespace AllYAll
                 }
                 catch (Exception ex)
                 {
-                    Debug.Log("Deploy Failed: "+ ex.Message);
+                    Log.Error("Deploy Failed: "+ ex.Message);
                     return false;
                 }
             }
@@ -337,7 +337,7 @@ namespace AllYAll
                 }
                 catch (Exception ex)
                 {
-                    Debug.Log("Retract Failed: " + ex.Message);
+                    Log.Error("Retract Failed: " + ex.Message);
                     return false;
                 }
             }
