@@ -1,5 +1,9 @@
 ﻿Changelog
 
+0.11.19.1
+	Added AssemblyFileVersion
+	Updated version file for 1.12
+
 0.11.19
 	Updated DMagic code, for both the old DMAPI and the DMModuleScienceAnimatedGeneric
 	Updated MM code for AYA_Science and new kerbal models
