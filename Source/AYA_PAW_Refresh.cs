@@ -7,7 +7,7 @@ namespace AllYAll
     public class AYA_PAW_Refresh : MonoBehaviour
     {
         public static AYA_PAW_Refresh Instance;
-        public enum AYA_Module { cargo, radiator, antenna, drill, fuelcell, activeradiator, sas, solar, genericAnimation };
+        public enum AYA_Module { cargo, radiator, antenna, rt_antenna, drill, fuelcell, activeradiator, sas, solar, genericAnimation };
         public void Start()
         {
             DontDestroyOnLoad(this);
@@ -26,6 +26,9 @@ namespace AllYAll
                     break;
                 case AYA_Module.antenna:
                     StartCoroutine(AntennaDelayedUpdatePAWMenu(p, e));
+                    break;
+                case AYA_Module.rt_antenna:
+                    StartCoroutine(AntennaRTDelayedUpdatePAWMenu(p, e));
                     break;
                 case AYA_Module.fuelcell:
                     StartCoroutine(FuelCellDelayedUpdatePAWMenu(p, e));
@@ -88,6 +91,22 @@ namespace AllYAll
         public IEnumerator AntennaDelayedUpdatePAWMenu(Part p, string e)
         {
             var thisPartAntenna = p.FindModuleImplementing<AYA_Antenna>();
+
+            while (thisPartAntenna.EventStatus(e) == false)
+            {
+                yield return new WaitForSeconds(0.25f);
+                if (p.vessel == FlightGlobals.ActiveVessel)
+                {
+                    //var thisPartCargoBay = p.FindModuleImplementing<AYA_CargoBay>();
+                    thisPartAntenna.UpdatePAWMenu();
+                }
+                else
+                    break;
+            }
+        }
+        public IEnumerator AntennaRTDelayedUpdatePAWMenu(Part p, string e)
+        {
+            var thisPartAntenna = p.FindModuleImplementing<AYA_AntennaRT>();
 
             while (thisPartAntenna.EventStatus(e) == false)
             {

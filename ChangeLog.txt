@@ -1,5 +1,8 @@
 ﻿Changelog
 
+0.11.19.2 
+	Added support for RemoteTech Antennas
+
 0.11.19.1
 	Added AssemblyFileVersion
 	Updated version file for 1.12
