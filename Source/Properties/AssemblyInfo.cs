@@ -3,7 +3,6 @@ using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
 //[assembly: AssemblyVersion("0.6")]
-[assembly: KSPAssembly("DangIt", 0, 6)]
 
 [assembly: AssemblyTitle("AllYAll")]
 [assembly: AssemblyDescription("One-Button Common Action Grouping")]
