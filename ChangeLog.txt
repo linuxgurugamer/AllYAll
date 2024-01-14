@@ -1,5 +1,12 @@
 ﻿Changelog
 
+0.11.20
+	Added new RCS support
+		Turn off all RCS
+		Turn on RCS in current Stage
+		Global RCS Thrust limiter adjustment
+		Current stage RCS Thrust limiter adjustment
+
 0.11.19.2 
 	Added support for RemoteTech Antennas
 

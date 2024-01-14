@@ -16,7 +16,7 @@ namespace AllYAll
 
     public class AYA_Solar : PartModule
     {
-        NFSWrapper.NFSCurvedPanel nfsWrapper = null;
+        //NFSWrapper.NFSCurvedPanel nfsWrapper = null;
         static bool NFSPresent;
         NFSWrapper.NFSCurvedPanel nfsCurvedPanelModule;
 

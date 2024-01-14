@@ -9,7 +9,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>AllYAll</RootNamespace>
     <AssemblyName>AllYAll</AssemblyName>
-    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile />
   </PropertyGroup>
@@ -48,6 +48,7 @@
     <Compile Include="AYA_ModuleAnimateGeneric2.cs" />
     <Compile Include="AYA_PAW_Refresh.cs" />
     <Compile Include="AYA_Radiator.cs" />
+    <Compile Include="AYA_RCS.cs" />
     <Compile Include="AYA_SAS.cs" />
     <Compile Include="AYA_Science.cs" />
     <Compile Include="AYA_ScienceBox.cs" />
