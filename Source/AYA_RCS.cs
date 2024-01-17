@@ -38,8 +38,9 @@ namespace AllYAll
                 if (p.children.Count > 0)
                 {
                     result.AddRange(p.children);
-                    foreach (var child in p.children)
+                    for (int j = 0; j < p.children.Count; j++)
                     {
+                        Part child = p.children[j];
                         result.AddRange(child.GetAllChildren(print));
                     }
                 }
@@ -56,9 +57,9 @@ namespace AllYAll
 #endif
             return result;
         }
-
-
     }
+
+
 
     // ############# RCS ############### //
 
@@ -74,16 +75,20 @@ namespace AllYAll
         [KSPAxisField(minValue = 0f, incrementalSpeed = 20f, isPersistant = true, axisMode = KSPAxisMode.Incremental, maxValue = 100f, guiActive = true, guiActiveEditor = true, guiName = "RCS Global Thrust Limiter")]
         public float rcsGlobalThrustPercentage = 100f;
 
+        Dictionary<uint, Part> usedParts = new Dictionary<uint, Part>();
+        Dictionary<int, Dictionary<uint, Part>> stageParts = new Dictionary<int, Dictionary<uint, Part>>();
 
         public void UI_Event_SetGlobalRCSThrust(BaseField field, object what)
         {
             rcsStageThrustPercentage = rcsGlobalThrustPercentage;
             part.GetAllChildren();
 
-            foreach (Part part in vessel.Parts)
+            for (int i = 0; i < vessel.Parts.Count; i++)
             {
-                foreach (PartModule pm in part.Modules) //change from part to partmodules
+                for (int j = 0; j < vessel.Parts[i].Modules.Count; j++)
                 {
+                    PartModule pm = vessel.Parts[i].Modules[j]; //change from part to partmodules
+
                     if (pm.moduleName == "ModuleRCS") //find partmodule RCS on th epart
                     {
                         var moduleRCS = (ModuleRCS)pm;
@@ -108,7 +113,6 @@ namespace AllYAll
             int engineOffset = 0;
             int curStageOffset = 0;
 
-
             foreach (Part part in stageParts[curStage].Values)
             {
 #if false
@@ -116,23 +120,25 @@ namespace AllYAll
 #endif
                 if (part.inverseStage + engineOffset >= curStage + curStageOffset)
                 {
-                    foreach (PartModule pm in part.Modules) //change from part to partmodules
+                    for (int j = 0; j < part.Modules.Count; j++)
                     {
-                        if (pm.moduleName == "ModuleRCS") //find partmodule RCS on th epart
+                        PartModule pm = part.Modules[j]; //change from part to partmodules
                         {
-                            var moduleRCS = (ModuleRCS)pm;
-                            moduleRCS.thrustPercentage = rcsStageThrustPercentage;
-                        }
-                        else if (pm.moduleName == "ModuleRCSFX") //find partmodule RCS on th epart
-                        {
-                            var moduleRCSFX = (ModuleRCSFX)pm;
-                            moduleRCSFX.thrustPercentage = rcsStageThrustPercentage;
+                            if (pm.moduleName == "ModuleRCS") //find partmodule RCS on th epart
+                            {
+                                var moduleRCS = (ModuleRCS)pm;
+                                moduleRCS.thrustPercentage = rcsStageThrustPercentage;
+                            }
+                            else if (pm.moduleName == "ModuleRCSFX") //find partmodule RCS on th epart
+                            {
+                                var moduleRCSFX = (ModuleRCSFX)pm;
+                                moduleRCSFX.thrustPercentage = rcsStageThrustPercentage;
+                            }
                         }
                     }
                 }
             }
         }
-
 
         [KSPEvent(guiActive = true, guiActiveEditor = false, guiName = "Shutdown all RCSs")]  //  "#AYA_RCS_UI_DEACTIVATE_ALL")]
         public void DeactivateAllRCSs()
@@ -140,11 +146,13 @@ namespace AllYAll
             Log.Info("DeactivateAllRCSs, part: " + part.partInfo.title + ", id: " + part.persistentId);
             part.GetAllChildren();
 
-            foreach (Part part in vessel.Parts)
+            for (int i = 0; i < vessel.Parts.Count; i++)
             {
-                foreach (PartModule pm in part.Modules) //change from part to partmodules
+                for (int j = 0; j < vessel.Parts[i].Modules.Count; j++)
                 {
-                    if (pm.moduleName == "ModuleRCS") //find partmodule RCS on th epart
+                    PartModule pm = vessel.Parts[i].Modules[j]; //change from part to partmodules
+
+                    if (pm.moduleName == "ModuleRCS") //find partmodule RCS on the part
                     {
                         var moduleRCS = (ModuleRCS)pm;
                         moduleRCS.rcsEnabled = false;
@@ -172,8 +180,6 @@ namespace AllYAll
 #endif
 
 
-        Dictionary<uint, Part> usedParts = new Dictionary<uint, Part>();
-        Dictionary<int, Dictionary<uint, Part>> stageParts = new Dictionary<int, Dictionary<uint, Part>>();
         //int stage;
 
         void ProcessDecoupler(ModuleDecouplerBase d, int stage)
@@ -228,12 +234,11 @@ namespace AllYAll
             while (stage >= -1)
             {
                 stageParts[stage] = new Dictionary<uint, Part>();
-                foreach (var d in decouplers)
-                    ProcessDecoupler(d, stage);
-                foreach (var d in anchoredDecouplers)
-                    ProcessDecoupler(d, stage);
-                //foreach (var d in allDecouplers)
-                //    ProcessDecoupler(d);
+                for (int i = 0; i < decouplers.Count; i++)
+                        ProcessDecoupler(decouplers[i], stage);
+                for (int i = 0; i < anchoredDecouplers.Count;i++)
+                        ProcessDecoupler(anchoredDecouplers[i], stage);
+
 #if false
                 if (stage > -1)
                 {
@@ -247,8 +252,10 @@ namespace AllYAll
 #endif
                 stage--;
             }
-            foreach (var p in vessel.parts)
+            for (int i = 0;i < vessel.Parts.Count;i++)
             {
+                Part p = vessel.parts[i];
+            
                 if (!(usedParts.ContainsKey(p.persistentId)))
                     stageParts[-1].Add(p.persistentId, p);
             }
@@ -263,8 +270,8 @@ namespace AllYAll
 
         }
 
-        [KSPEvent(guiActive = true, guiActiveEditor = false, guiName = "Activate all RCSs in current stage")]  //  "#AYA_RCS_UI_DEACTIVATE_ALL")]
-        public void ActivateAllRCSsInStage()
+        [KSPEvent(guiActive = true, guiActiveEditor = false, guiName = "Activate all RCSs in active stage")]  //  "#AYA_RCS_UI_DEACTIVATE_ALL")]
+        public void ActivateAllRCSsInActiveStage()
         {
             var curStage = FlightGlobals.ActiveVessel.currentStage - 1;
 
@@ -272,20 +279,17 @@ namespace AllYAll
 
             GetAllPartsInEachStage();
 
-            // First, find out if any engines in this stage
-            int engineOffset = 0;
-            int curStageOffset = 0;
-
-
             foreach (Part part in stageParts[curStage].Values)
             {
 #if false
                 Log.Info("Part: " + part.partInfo.title + ", inverseStage: " + part.inverseStage + ", stageOffset: " + part.stageOffset + ", curStage: " + curStage + ", engineOffset: " + engineOffset);
 #endif
-                if (part.inverseStage + engineOffset >= curStage + curStageOffset)
+                if (part.inverseStage >= curStage)
                 {
-                    foreach (PartModule pm in part.Modules) //change from part to partmodules
+                    for (int i = 0; i < part.Modules.Count; i++)
                     {
+                        PartModule pm = part.Modules[i]; //change from part to partmodules
+                    
                         if (pm.moduleName == "ModuleRCS") //find partmodule RCS on th epart
                         {
                             var moduleRCS = (ModuleRCS)pm;
@@ -301,20 +305,62 @@ namespace AllYAll
             }
         }
 
+        [KSPEvent(guiActive = true, guiActiveEditor = false, guiName = "Activate all RCSs in current stage")]  //  "#AYA_RCS_UI_DEACTIVATE_ALL")]
+        public void ActivateAllRCSsInCurrentStage()
+        {
+            var curStage = FlightGlobals.ActiveVessel.currentStage - 1;
+            curStage = part.inverseStage;
+
+            //DumpVesselStagingInfo(vessel);
+
+            GetAllPartsInEachStage();
+
+
+            foreach (Part part in stageParts[curStage].Values)
+            {
+#if false
+                Log.Info("Part: " + part.partInfo.title + ", inverseStage: " + part.inverseStage + ", stageOffset: " + part.stageOffset + ", curStage: " + curStage + ", engineOffset: " + engineOffset);
+#endif
+                if (part.inverseStage == curStage)
+                {
+                    for (int i = 0; i < part.Modules.Count; i++)
+                    {
+                        PartModule pm = part.Modules[i]; //change from part to partmodules
+
+                        if (pm.moduleName == "ModuleRCS") //find partmodule RCS on th epart
+                        {
+                            var moduleRCS = (ModuleRCS)pm;
+                            moduleRCS.rcsEnabled = true;
+                        }
+                        else if (pm.moduleName == "ModuleRCSFX") //find partmodule RCS on th epart
+                        {
+                            var moduleRCSFX = (ModuleRCSFX)pm;
+                            moduleRCSFX.rcsEnabled = true;
+                        }
+                    }
+                }
+            }
+        }
+
+
         [KSPEvent(guiActive = true, guiActiveEditor = false, guiName = "Activate all RCSs")]  //  "#AYA_RCS_UI_DEACTIVATE_ALL")]
         public void ActivateAllRCSs()
         {
             var curStage = FlightGlobals.ActiveVessel.currentStage - 1;
-            foreach (Part part in vessel.Parts)
+            for (int j = 0; j < vessel.Parts.Count; j++)
             {
-                foreach (PartModule pm in part.Modules) //change from part to partmodules
+                Part part = vessel.Parts[j];
+            
+                for (int i = 0; i < part.Modules.Count; i++)
                 {
-                    if (pm is ModuleRCS) //find partmodule RCS on th epart
+                    PartModule pm = part.Modules[i]; //change from part to partmodules
+
+                    if (pm is ModuleRCS) //find partmodule RCS on the part
                     {
                         var moduleRCS = (ModuleRCS)pm;
                         moduleRCS.rcsEnabled = true;
                     }
-                    else if (pm is ModuleRCSFX) //find partmodule RCS on th epart
+                    else if (pm is ModuleRCSFX) //find partmodule RCS on the part
                     {
                         var moduleRCSFX = (ModuleRCSFX)pm;
                         moduleRCSFX.rcsEnabled = true;
@@ -322,11 +368,12 @@ namespace AllYAll
                 }
             }
         }
-
+            
         public void Start()
         {
             if (HighLogic.LoadedScene != GameScenes.FLIGHT)
                 return;
+
             Fields["rcsStageThrustPercentage"].uiControlFlight.onFieldChanged += UI_Event_SetStageRCSThrust;
             Fields["rcsGlobalThrustPercentage"].uiControlFlight.onFieldChanged += UI_Event_SetGlobalRCSThrust;
 
@@ -338,39 +385,83 @@ namespace AllYAll
             while (true)
             {
                 bool anyRCSActive = false;
+                bool thisRCSActive = false;
+                bool activeStageRCSActive = false;
 
-                foreach (PartModule pm in part.Modules)
+
+                // First check to see if this part has RCS enabled
+                for (int i = 0; i < part.Modules.Count; i++)
                 {
+                    PartModule pm = part.Modules[i]; //change from part to partmodules
+
                     if (pm is ModuleRCS) //find partmodule RCS on th epart
                     {
                         var moduleRCS = (ModuleRCS)pm;
-                        Events["DeactivateAllRCSs"].active = moduleRCS.rcsEnabled;
+                        //Events["DeactivateAllRCSs"].active = moduleRCS.rcsEnabled;
                         if (moduleRCS.rcsEnabled)
                         {
-                            anyRCSActive = true;
+                            thisRCSActive = true;
                             break;
                         }
                     }
-                    else if (pm is ModuleRCSFX) //find partmodule RCS on th epart
+                    else if (pm is ModuleRCSFX) //find partmodule RCS on the part
                     {
                         var moduleRCSFX = (ModuleRCSFX)pm;
-                        Events["DeactivateAllRCSs"].active = moduleRCSFX.rcsEnabled;
+                        //Events["DeactivateAllRCSs"].active = moduleRCSFX.rcsEnabled;
                         if (moduleRCSFX.rcsEnabled)
                         {
-                            anyRCSActive = true;
+                            thisRCSActive = true;
                             break;
                         }
                     }
                 }
+
                 var curStage = FlightGlobals.ActiveVessel.currentStage - 1;
 
-                if (!anyRCSActive && part.inverseStage != curStage)
+                // Check the active stage
+                GetAllPartsInEachStage();
+                foreach (Part part in stageParts[curStage].Values)
                 {
-                    foreach (Part part in vessel.Parts)
+                    if (part.inverseStage >= curStage)
                     {
-
-                        foreach (PartModule pm in part.Modules) //change from part to partmodules
+                        for (int i = 0; i < part.Modules.Count; i++)
                         {
+                            PartModule pm = part.Modules[i]; //change from part to partmodules
+
+                            if (pm.moduleName == "ModuleRCS") //find partmodule RCS on th epart
+                            {
+                                var moduleRCS = (ModuleRCS)pm;
+                                if (moduleRCS.rcsEnabled)
+                                {
+                                    activeStageRCSActive = true;
+                                    break;
+                                }
+                            }
+                            else if (pm.moduleName == "ModuleRCSFX") //find partmodule RCS on th epart
+                            {
+                                var moduleRCSFX = (ModuleRCSFX)pm;
+                                if (moduleRCSFX.rcsEnabled == true)
+                                {
+                                    activeStageRCSActive = true;
+                                    break;
+                                }
+                            }
+                        }
+                    }
+                }
+
+                // Now check the rest of the vessel
+
+                //if (part.inverseStage != curStage)
+                {
+                    for (int j = 0; j < vessel.Parts.Count; j++)
+                    {
+                        Part part = vessel.Parts[j];
+                    
+                        for (int i = 0; i < part.Modules.Count; i++)
+                        {
+                            PartModule pm = part.Modules[i]; //change from part to partmodules
+
                             if (pm is ModuleRCS) //find partmodule RCS on the part
                             {
                                 var moduleRCS = (ModuleRCS)pm;
@@ -394,9 +485,14 @@ namespace AllYAll
                             break;
                     }
                 }
-                Events["ActivateAllRCSsInStage"].active = !anyRCSActive;
+                Events["ActivateAllRCSsInActiveStage"].active = !activeStageRCSActive;
+                Events["ActivateAllRCSsInCurrentStage"].active = !thisRCSActive;
                 Events["ActivateAllRCSs"].active = !anyRCSActive;
+
+                Events["DeactivateAllRCSs"].active = anyRCSActive;
+
                 yield return (object)new WaitForSeconds(1f);
+
             }
         }
     }

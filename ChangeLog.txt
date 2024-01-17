@@ -4,6 +4,7 @@
 	Added new RCS support
 		Turn off all RCS
 		Turn on RCS in current Stage
+		Turn on RCS in active Stage
 		Global RCS Thrust limiter adjustment
 		Current stage RCS Thrust limiter adjustment
 
