@@ -68,11 +68,11 @@ namespace AllYAll
     public class AYA_RCS : PartModule
     {
         [UI_FloatRange(requireFullControl = true, stepIncrement = 0.5f, maxValue = 100f, minValue = 0f)]
-        [KSPAxisField(minValue = 0f, incrementalSpeed = 20f, isPersistant = true, axisMode = KSPAxisMode.Incremental, maxValue = 100f, guiActive = true, guiActiveEditor = true, guiName = "RCS Stage Thrust Limiter")]
+        [KSPAxisField(minValue = 0f, incrementalSpeed = 20f, isPersistant = true, axisMode = KSPAxisMode.Incremental, maxValue = 100f, guiActive = true, guiActiveEditor = true, guiName = "RCS Stage Thrust Limiter", groupStartCollapsed = true, groupName = "RCSControl", groupDisplayName = "RCS Control")]
         public float rcsStageThrustPercentage = 100f;
 
         [UI_FloatRange(requireFullControl = true, stepIncrement = 0.5f, maxValue = 100f, minValue = 0f)]
-        [KSPAxisField(minValue = 0f, incrementalSpeed = 20f, isPersistant = true, axisMode = KSPAxisMode.Incremental, maxValue = 100f, guiActive = true, guiActiveEditor = true, guiName = "RCS Global Thrust Limiter")]
+        [KSPAxisField(minValue = 0f, incrementalSpeed = 20f, isPersistant = true, axisMode = KSPAxisMode.Incremental, maxValue = 100f, guiActive = true, guiActiveEditor = true, guiName = "RCS Global Thrust Limiter", groupStartCollapsed = true, groupName = "RCSControl", groupDisplayName = "RCS Control")]
         public float rcsGlobalThrustPercentage = 100f;
 
         Dictionary<uint, Part> usedParts = new Dictionary<uint, Part>();
@@ -140,7 +140,7 @@ namespace AllYAll
             }
         }
 
-        [KSPEvent(guiActive = true, guiActiveEditor = false, guiName = "Shutdown all RCSs")]  //  "#AYA_RCS_UI_DEACTIVATE_ALL")]
+        [KSPEvent(guiActive = true, guiActiveEditor = false, guiName = "Shutdown all RCSs",  groupStartCollapsed = true, groupName = "RCSControl", groupDisplayName = "RCS Control")]  //  "#AYA_RCS_UI_DEACTIVATE_ALL")]
         public void DeactivateAllRCSs()
         {
             Log.Info("DeactivateAllRCSs, part: " + part.partInfo.title + ", id: " + part.persistentId);
@@ -270,7 +270,7 @@ namespace AllYAll
 
         }
 
-        [KSPEvent(guiActive = true, guiActiveEditor = false, guiName = "Activate all RCSs in active stage")]  //  "#AYA_RCS_UI_DEACTIVATE_ALL")]
+        [KSPEvent(guiActive = true, guiActiveEditor = false, guiName = "Activate all RCSs in active stage", groupStartCollapsed = true, groupName = "RCSControl", groupDisplayName = "RCS Control")]  //  "#AYA_RCS_UI_DEACTIVATE_ALL")]
         public void ActivateAllRCSsInActiveStage()
         {
             var curStage = FlightGlobals.ActiveVessel.currentStage - 1;
@@ -305,7 +305,7 @@ namespace AllYAll
             }
         }
 
-        [KSPEvent(guiActive = true, guiActiveEditor = false, guiName = "Activate all RCSs in current stage")]  //  "#AYA_RCS_UI_DEACTIVATE_ALL")]
+        [KSPEvent(guiActive = true, guiActiveEditor = false, guiName = "Activate all RCSs in current stage", groupStartCollapsed = true, groupName = "RCSControl", groupDisplayName = "RCS Control")]  //  "#AYA_RCS_UI_DEACTIVATE_ALL")]
         public void ActivateAllRCSsInCurrentStage()
         {
             var curStage = FlightGlobals.ActiveVessel.currentStage - 1;
@@ -343,7 +343,7 @@ namespace AllYAll
         }
 
 
-        [KSPEvent(guiActive = true, guiActiveEditor = false, guiName = "Activate all RCSs")]  //  "#AYA_RCS_UI_DEACTIVATE_ALL")]
+        [KSPEvent(guiActive = true, guiActiveEditor = false, guiName = "Activate all RCSs", groupStartCollapsed = true, groupName = "RCSControl", groupDisplayName = "RCS Control")]  //  "#AYA_RCS_UI_DEACTIVATE_ALL")]
         public void ActivateAllRCSs()
         {
             var curStage = FlightGlobals.ActiveVessel.currentStage - 1;

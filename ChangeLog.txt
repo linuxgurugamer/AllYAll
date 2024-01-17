@@ -1,5 +1,8 @@
 ﻿Changelog
 
+0.11.20.1
+	Moved fields and toggles into it's own submenu in the PAW
+
 0.11.20
 	Added new RCS support
 		Turn off all RCS
