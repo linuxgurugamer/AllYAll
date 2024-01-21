@@ -112,7 +112,11 @@ namespace AllYAll
             // First, find out if any engines in this stage
             int engineOffset = 0;
             int curStageOffset = 0;
-
+            if (!stageParts.ContainsKey(curStage))
+            {
+                Log.Error("Stage not found: " + curStage + " in stageParts.  This usually indicates a problem in a different mod");
+                return;
+            }
             foreach (Part part in stageParts[curStage].Values)
             {
 #if false
@@ -278,6 +282,11 @@ namespace AllYAll
             //DumpVesselStagingInfo(vessel);
 
             GetAllPartsInEachStage();
+            if (!stageParts.ContainsKey(curStage))
+            {
+                Log.Error("Stage not found: " + curStage + " in stageParts.  This usually indicates a problem in a different mod");
+                return;
+            }
 
             foreach (Part part in stageParts[curStage].Values)
             {
@@ -315,6 +324,11 @@ namespace AllYAll
 
             GetAllPartsInEachStage();
 
+            if (!stageParts.ContainsKey(curStage))
+            {
+                Log.Error("Stage not found: " + curStage + " in stageParts.  This usually indicates a problem in a different mod");
+                return;
+            }
 
             foreach (Part part in stageParts[curStage].Values)
             {
@@ -420,36 +434,42 @@ namespace AllYAll
 
                 // Check the active stage
                 GetAllPartsInEachStage();
-                foreach (Part part in stageParts[curStage].Values)
+                if (!stageParts.ContainsKey(curStage))
                 {
-                    if (part.inverseStage >= curStage)
+                    Log.Error("Stage not found: " + curStage + " in stageParts.  This usually indicates a problem in a different mod");
+                }
+                else
+                {
+                    foreach (Part part in stageParts[curStage].Values)
                     {
-                        for (int i = 0; i < part.Modules.Count; i++)
+                        if (part.inverseStage >= curStage)
                         {
-                            PartModule pm = part.Modules[i]; //change from part to partmodules
+                            for (int i = 0; i < part.Modules.Count; i++)
+                            {
+                                PartModule pm = part.Modules[i]; //change from part to partmodules
 
-                            if (pm.moduleName == "ModuleRCS") //find partmodule RCS on th epart
-                            {
-                                var moduleRCS = (ModuleRCS)pm;
-                                if (moduleRCS.rcsEnabled)
+                                if (pm.moduleName == "ModuleRCS") //find partmodule RCS on th epart
                                 {
-                                    activeStageRCSActive = true;
-                                    break;
+                                    var moduleRCS = (ModuleRCS)pm;
+                                    if (moduleRCS.rcsEnabled)
+                                    {
+                                        activeStageRCSActive = true;
+                                        break;
+                                    }
                                 }
-                            }
-                            else if (pm.moduleName == "ModuleRCSFX") //find partmodule RCS on th epart
-                            {
-                                var moduleRCSFX = (ModuleRCSFX)pm;
-                                if (moduleRCSFX.rcsEnabled == true)
+                                else if (pm.moduleName == "ModuleRCSFX") //find partmodule RCS on th epart
                                 {
-                                    activeStageRCSActive = true;
-                                    break;
+                                    var moduleRCSFX = (ModuleRCSFX)pm;
+                                    if (moduleRCSFX.rcsEnabled == true)
+                                    {
+                                        activeStageRCSActive = true;
+                                        break;
+                                    }
                                 }
                             }
                         }
                     }
                 }
-
                 // Now check the rest of the vessel
 
                 //if (part.inverseStage != curStage)

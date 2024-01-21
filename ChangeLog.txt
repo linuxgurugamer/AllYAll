@@ -1,5 +1,9 @@
 ﻿Changelog
 
+0.11.20.2
+	Added checks for nonexistent stage, apparently which can be caused by  BDArmory:
+		Note from user: "(which can apparently happen from spawning vessels via BDArmory since we don't manage to properly restore the staging order)""
+
 0.11.20.1
 	Moved fields and toggles into it's own submenu in the PAW
 
