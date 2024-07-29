@@ -73,150 +73,151 @@ namespace AllYAll
         new void Start()
         {
             base.Start();
-            var rcs = vessel.FindPartModulesImplementing<ModuleRCS>();
-            var rcsfx = vessel.FindPartModulesImplementing<ModuleRCSFX>();
 
-            if (HighLogic.LoadedSceneIsFlight &&
-                (rcs.Count > 0 || rcsfx.Count > 0))
-                StartCoroutine("SlowUpdate");
+            //if (HighLogic.LoadedSceneIsFlight &&
+            //    (rcs.Count > 0 || rcsfx.Count > 0))
+            //    StartCoroutine("SlowUpdate");
         }
 
-        IEnumerator SlowUpdate()
+        internal void OneTimeUpdate()
         {
-            while (true)
+            if (HighLogic.LoadedSceneIsFlight)
             {
-                bool anyRCSActive = false;
-                bool thisRCSActive = false;
-                bool activeStageRCSActive = false;
-
-                if (vessel != null && vessel.Parts != null &&
-                                    FlightGlobals.ActiveVessel == this.vessel)
-
+                var rcs = vessel.FindPartModulesImplementing<ModuleRCS>();
+                var rcsfx = vessel.FindPartModulesImplementing<ModuleRCSFX>();
+                if (rcs.Count + rcsfx.Count > 0)
                 {
-                    GetAllPartsInEachStage();
+                    bool anyRCSActive = false;
+                    bool thisRCSActive = false;
+                    bool activeStageRCSActive = false;
 
-                    for (int p = 0; p < vessel.Parts.Count; p++)
+                    if (vessel != null && vessel.Parts != null &&
+                                        FlightGlobals.ActiveVessel == this.vessel)
+
                     {
-                        var part = vessel.Parts[p];
+                        GetAllPartsInEachStage();
 
-                        // First check to see if this part has RCS enabled
-                        for (int i = 0; i < part.Modules.Count; i++)
+                        for (int p = 0; p < vessel.Parts.Count; p++)
                         {
-                            PartModule pm = part.Modules[i]; //change from part to partmodules
+                            var part = vessel.Parts[p];
 
-                            if (pm is ModuleRCS) //find partmodule RCS on the part
+                            // First check to see if this part has RCS enabled
+                            for (int i = 0; i < part.Modules.Count; i++)
                             {
-                                var moduleRCS = (ModuleRCS)pm;
-                                if (moduleRCS.rcsEnabled)
-                                {
-                                    thisRCSActive = true;
-                                    break;
-                                }
-                            }
-                            else if (pm is ModuleRCSFX) //find partmodule RCS on the part
-                            {
-                                var moduleRCSFX = (ModuleRCSFX)pm;
-                                if (moduleRCSFX.rcsEnabled)
-                                {
-                                    thisRCSActive = true;
-                                    break;
-                                }
-                            }
-                        }
+                                PartModule pm = part.Modules[i]; //change from part to partmodules
 
-                        var curStage = FlightGlobals.ActiveVessel.currentStage - 1;
-
-                        // Check the active stage
-
-                        if (!stageParts.ContainsKey(curStage))
-                        {
-                            Log.Error("Stage not found: " + curStage + " in stageParts.  This usually indicates a problem in a different mod");
-                        }
-                        else
-                        {
-                            foreach (Part part3 in stageParts[curStage].Values)
-                            {
-                                if (part3.inverseStage >= curStage)
+                                if (pm is ModuleRCS) //find partmodule RCS on the part
                                 {
-                                    for (int i = 0; i < part3.Modules.Count; i++)
+                                    var moduleRCS = (ModuleRCS)pm;
+                                    if (moduleRCS.rcsEnabled)
                                     {
-                                        PartModule pm = part3.Modules[i]; //change from part to partmodules
+                                        thisRCSActive = true;
+                                        break;
+                                    }
+                                }
+                                else if (pm is ModuleRCSFX) //find partmodule RCS on the part
+                                {
+                                    var moduleRCSFX = (ModuleRCSFX)pm;
+                                    if (moduleRCSFX.rcsEnabled)
+                                    {
+                                        thisRCSActive = true;
+                                        break;
+                                    }
+                                }
+                            }
 
-                                        if (pm.moduleName == "ModuleRCS") //find partmodule RCS on th epart
+                            var curStage = FlightGlobals.ActiveVessel.currentStage - 1;
+
+                            // Check the active stage
+
+                            if (!stageParts.ContainsKey(curStage))
+                            {
+                                Log.Error("Stage not found: " + curStage + " in stageParts.  This usually indicates a problem in a different mod");
+                            }
+                            else
+                            {
+                                foreach (Part part3 in stageParts[curStage].Values)
+                                {
+                                    if (part3.inverseStage >= curStage)
+                                    {
+                                        for (int i = 0; i < part3.Modules.Count; i++)
+                                        {
+                                            PartModule pm = part3.Modules[i]; //change from part to partmodules
+
+                                            if (pm.moduleName == "ModuleRCS") //find partmodule RCS on th epart
+                                            {
+                                                var moduleRCS = (ModuleRCS)pm;
+                                                if (moduleRCS.rcsEnabled)
+                                                {
+                                                    activeStageRCSActive = true;
+                                                    break;
+                                                }
+                                            }
+                                            else if (pm.moduleName == "ModuleRCSFX") //find partmodule RCS on th epart
+                                            {
+                                                var moduleRCSFX = (ModuleRCSFX)pm;
+                                                if (moduleRCSFX.rcsEnabled == true)
+                                                {
+                                                    activeStageRCSActive = true;
+                                                    break;
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                            // Now check the rest of the vessel
+
+                            //if (part.inverseStage != curStage)
+                            {
+                                for (int j = 0; j < vessel.Parts.Count; j++)
+                                {
+                                    Part part2 = vessel.Parts[j];
+
+                                    for (int i = 0; i < part2.Modules.Count; i++)
+                                    {
+
+                                        PartModule pm = part2.Modules[i]; //change from part to partmodules
+
+                                        if (pm is ModuleRCS) //find partmodule RCS on the part
                                         {
                                             var moduleRCS = (ModuleRCS)pm;
                                             if (moduleRCS.rcsEnabled)
                                             {
-                                                activeStageRCSActive = true;
+                                                anyRCSActive = true;
                                                 break;
                                             }
                                         }
-                                        else if (pm.moduleName == "ModuleRCSFX") //find partmodule RCS on th epart
+                                        else if (pm is ModuleRCSFX) //find partmodule RCS on the part
                                         {
                                             var moduleRCSFX = (ModuleRCSFX)pm;
-                                            if (moduleRCSFX.rcsEnabled == true)
+                                            if (moduleRCSFX.rcsEnabled)
                                             {
-                                                activeStageRCSActive = true;
+                                                anyRCSActive = true;
                                                 break;
                                             }
                                         }
                                     }
+                                    if (anyRCSActive)
+                                        break;
                                 }
                             }
-                        }
-                        // Now check the rest of the vessel
-
-                        //if (part.inverseStage != curStage)
-                        {
-                            for (int j = 0; j < vessel.Parts.Count; j++)
+                            if (part.Events != null)
                             {
-                                Part part2 = vessel.Parts[j];
-
-                                for (int i = 0; i < part2.Modules.Count; i++)
-                                {
-
-                                    PartModule pm = part2.Modules[i]; //change from part to partmodules
-
-                                    if (pm is ModuleRCS) //find partmodule RCS on the part
-                                    {
-                                        var moduleRCS = (ModuleRCS)pm;
-                                        if (moduleRCS.rcsEnabled)
-                                        {
-                                            anyRCSActive = true;
-                                            break;
-                                        }
-                                    }
-                                    else if (pm is ModuleRCSFX) //find partmodule RCS on the part
-                                    {
-                                        var moduleRCSFX = (ModuleRCSFX)pm;
-                                        if (moduleRCSFX.rcsEnabled)
-                                        {
-                                            anyRCSActive = true;
-                                            break;
-                                        }
-                                    }
-                                }
-                                if (anyRCSActive)
-                                    break;
+                                if (part.Events.Contains("ActivateAllRCSsInActiveStage"))
+                                    part.Events["ActivateAllRCSsInActiveStage"].active = !activeStageRCSActive;
+                                if (part.Events.Contains("ActivateAllRCSsInCurrentStage"))
+                                    part.Events["ActivateAllRCSsInCurrentStage"].active = !thisRCSActive;
+                                if (part.Events.Contains("ActivateAllRCSs"))
+                                    part.Events["ActivateAllRCSs"].active = !anyRCSActive;
+                                if (part.Events.Contains("DeactivateAllRCSs"))
+                                    part.Events["DeactivateAllRCSs"].active = anyRCSActive;
                             }
-                        }
-                        if (part.Events != null)
-                        {
-                            if (part.Events.Contains("ActivateAllRCSsInActiveStage"))
-                                part.Events["ActivateAllRCSsInActiveStage"].active = !activeStageRCSActive;
-                            if (part.Events.Contains("ActivateAllRCSsInCurrentStage"))
-                                part.Events["ActivateAllRCSsInCurrentStage"].active = !thisRCSActive;
-                            if (part.Events.Contains("ActivateAllRCSs"))
-                                part.Events["ActivateAllRCSs"].active = !anyRCSActive;
-                            if (part.Events.Contains("DeactivateAllRCSs"))
-                                part.Events["DeactivateAllRCSs"].active = anyRCSActive;
                         }
                     }
                 }
-                yield return new WaitForSeconds(1f);
             }
         }
-
         internal void GetAllPartsInEachStage()
         {
             int stage = vessel.currentStage; // (need to verify this is the same as the inverseStage in the part)
@@ -349,6 +350,7 @@ namespace AllYAll
         {
             var curStage = FlightGlobals.ActiveVessel.currentStage - 1;
 
+            vesselModule.OneTimeUpdate();
             vesselModule.GetAllPartsInEachStage();
 
             // First, find out if any engines in this stage
@@ -390,6 +392,7 @@ namespace AllYAll
         public void DeactivateAllRCSs()
         {
             Log.Info("DeactivateAllRCSs, part: " + part.partInfo.title + ", id: " + part.persistentId);
+            //vesselModule.OneTimeUpdate();
             part.GetAllChildren();
             for (int i = 0; i < vessel.Parts.Count; i++)
             {
@@ -433,6 +436,7 @@ namespace AllYAll
 
             //DumpVesselStagingInfo(vessel);
 
+            vesselModule.OneTimeUpdate();
             vesselModule.GetAllPartsInEachStage();
             if (!vesselModule.stageParts.ContainsKey(curStage))
             {
@@ -473,7 +477,7 @@ namespace AllYAll
             curStage = part.inverseStage;
 
             //DumpVesselStagingInfo(vessel);
-
+            vesselModule.OneTimeUpdate();
             vesselModule.GetAllPartsInEachStage();
 
             if (!vesselModule.stageParts.ContainsKey(curStage))
