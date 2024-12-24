@@ -1,6 +1,6 @@
 {
   "NAME": "AllYAllContinued",
-  "URL": "http://ksp.spacetux.net/avc/AllYAll",
+  "URL": "https://raw.githubusercontent.com/linuxgurugamer/AllYAll/refs/heads/master/AllYAll.version",
   "DOWNLOAD": "https://github.com/linuxgurugamer/AllYAll/releases",
   "GITHUB": {
     "USERNAME": "linuxgurugamer",
@@ -10,7 +10,7 @@
     "MAJOR": 0,
     "MINOR": 11,
     "PATCH": 21,
-    "BUILD": 1
+    "BUILD": 2
   },
   "KSP_VERSION": {
     "MAJOR": 1,

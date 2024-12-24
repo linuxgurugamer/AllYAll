@@ -1,5 +1,9 @@
 ﻿Changelog
 
+0.11.21.2
+	Added README-Web (copy of forum page)
+	Updated version file to use github for version info
+
 0.11.21.1 
 	Fixed the RCS stuttering issue by not doing constant updates in the vessel module for the stages.  Now it checks only when needed
 
